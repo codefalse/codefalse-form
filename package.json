@@ -1,0 +1,22 @@
+{
+  "name": "codefalse-form",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codefalse/codefalse-form.git"
+  },
+  "author": "jakesong1018@aliyun.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/codefalse/codefalse-form/issues"
+  },
+  "homepage": "https://github.com/codefalse/codefalse-form#readme",
+  "devDependencies": {
+    "jquery": "^3.3.1"
+  }
+}

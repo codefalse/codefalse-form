@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="../src/input/input.css" rel="stylesheet" type="text/css" />
+    <style>
+        .demo{
+            width: 500px;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="demo">
+    <input id="filed" class="demo" type="text" name="codefalse" value="123"/>
+    <div>我是看热卖的</div>
+</div>
+<script src="../node_modules/jquery/dist/jquery.js"></script>
+<script src="../src/input/input.js"></script>
+<script>
+    $().ready(function () {
+         $('#filed').codefalseInput({
+             ajax: {
+                 url: ''
+             }
+         }, function (text) {
+             console.log(text)
+         });
+    });
+</script>
+</body>
+</html>
