@@ -1,5 +1,6 @@
-var gulp = require('gulp');
-var babel = require('gulp-babel');
+var gulp = require('gulp'),
+    babel = require('gulp-babel'),
+    uglify = require('gulp-uglify');
 
 gulp.task('default', function() {
     // es6 -> es5
