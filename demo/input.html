@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link href="../src/input/input.css" rel="stylesheet" type="text/css" />
+    <link href="../src/css/input.css" rel="stylesheet" type="text/css" />
     <style>
         .demo{
             width: 500px;
@@ -17,12 +17,12 @@
     <div>我是看热卖的</div>
 </div>
 <script src="../node_modules/jquery/dist/jquery.js"></script>
-<script src="../src/input/input.js"></script>
+<script src="../src/js/input.js"></script>
 <script>
     $().ready(function () {
          $('#filed').codefalseInput({
              ajax: {
-                 url: ''
+                 url: 'http://localhost:8080/users'
              }
          }, function (text) {
              console.log(text)

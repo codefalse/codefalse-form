@@ -20,18 +20,18 @@
 
     function adapter(showId, data){
         $('#'+showId).find('.codefalse-input-options').show();
-        var ul = $('#'+showId).find('.codefalse-input-options>ul');
+        let ul = $('#'+showId).find('.codefalse-input-options>ul');
         ul.empty();
-        for (var n in data){
-            var obj = data[n];
+        for (let n in data){
+            let obj = data[n];
             ul.append('<li value="'+obj.userId+'">'+obj.username+'</li>');
         }
     }
     $.fn.codefalseInput = function (options, change) {
         console.log('codefalse input starting...');
-        var _this = $(this);
+        let _this = $(this);
         // default options
-        var defaults = {
+        let defaults = {
             ajax: {
                 type: 'GET',
                 url: ''
@@ -39,21 +39,21 @@
         };
         $.extend(defaults, options);
 
-        var inputId = '';
-        var methods = {
+        let inputId = '';
+        let methods = {
             init: function () {
                 console.log('codefalse input init...');
                 // hidden input
                 _this.attr('type', 'hidden');
                 // clone input
-                var random = parseInt(Math.random() * 100000 + '');
-                var searchId = 'codefalse-search' + random;
-                var clazz = _this.attr('class');
-                var searchInput = '<input id="'+searchId+'" type="text" class="'+clazz+'"/>';
+                let random = parseInt(Math.random() * 100000 + '');
+                let searchId = 'codefalse-search' + random;
+                let clazz = _this.attr('class');
+                let searchInput = '<input id="'+searchId+'" type="text" class="'+clazz+'"/>';
                 _this.after(searchInput);
                 // add select option
                 inputId = 'codefalse-input' + random;
-                var selectOptionHtml = '<div id="'+inputId+'" class="codefalse-input">' +
+                let selectOptionHtml = '<div id="'+inputId+'" class="codefalse-input">' +
                     '        <div class="codefalse-input-options">' +
                     '            <ul></ul>' +
                     '        </div>' +
@@ -69,7 +69,7 @@
                         requestData(inputId, defaults.ajax, $(this).val());
                     }
                 });
-                var isHide = true;
+                let isHide = true;
                 $('#'+ searchId).on('blur', function () {
                     if(isHide){
                         $(this).val('');
@@ -83,8 +83,8 @@
                     isHide = true;
                 });
                 $('#'+inputId + '>.codefalse-input-options>ul').on('click', 'li', function () {
-                    var val = $(this).val();
-                    var text = $(this).text();
+                    let val = $(this).val();
+                    let text = $(this).text();
                     _this.val(val);
                     $('#'+ searchId).val(text);
                     $('#'+inputId).find('.codefalse-input-options').hide();
