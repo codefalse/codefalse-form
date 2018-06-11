@@ -21,12 +21,14 @@
 <script>
     $().ready(function () {
          $('#filed').codefalseInput({
-             ajax: {
-                 url: 'http://localhost:8080/users'
-             }
+             key: 'id',
+             value: ['name', 'age']
          }, function (text) {
              console.log(text)
-         });
+         }).adapter([
+             {id:1, name: 'song', age: 23},
+             {id:2, name: 'aaa', age: 34}
+         ]);
     });
 </script>
 </body>

@@ -3,7 +3,8 @@
  */
 (function ($) {
     //private method
-    function requestData(showId, ajax, params){
+    function requestData(showId, options, params){
+        let ajax = options.ajax;
         console.log(ajax.url + ': send ajax...');
         $.ajax({
             type: ajax.type,
@@ -13,18 +14,27 @@
                 codefalse: params
             },
             success: function (data) {
-                adapter(showId, data);
+                adapter(showId, options, data);
             }
         });
     }
 
-    function adapter(showId, data){
+    function adapter(showId, options, data){
         $('#'+showId).find('.codefalse-input-options').show();
         let ul = $('#'+showId).find('.codefalse-input-options>ul');
         ul.empty();
         for (let n in data){
             let obj = data[n];
-            ul.append('<li value="'+obj.userId+'">'+obj.username+'</li>');
+            let key = obj[options.key];
+            let value = '';
+            for (var i in options.value){
+                let name = options.value[i];
+                if(value != ''){
+                    value += options.separator;
+                }
+                value += obj[name];
+            }
+            ul.append('<li value="'+key+'">'+value+'</li>');
         }
     }
     $.fn.codefalseInput = function (options, change) {
@@ -32,6 +42,9 @@
         let _this = $(this);
         // default options
         let defaults = {
+            key: 'id',
+            value: ['name'],
+            separator: '-',
             ajax: {
                 type: 'GET',
                 url: ''
@@ -66,7 +79,7 @@
                         change($(this).val());
                     }
                     if(defaults.ajax.url != null && defaults.ajax.url != ''){
-                        requestData(inputId, defaults.ajax, $(this).val());
+                        requestData(inputId, defaults, $(this).val());
                     }
                 });
                 let isHide = true;
@@ -93,7 +106,7 @@
             },
             adapter: function (data) {
                 console.log('apapter data:' + data);
-                adapter(inputId, data);
+                adapter(inputId, defaults, data);
                 return this;
             },
         };

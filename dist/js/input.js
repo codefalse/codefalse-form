@@ -5,7 +5,8 @@
  */
 (function ($) {
     //private method
-    function requestData(showId, ajax, params) {
+    function requestData(showId, options, params) {
+        var ajax = options.ajax;
         console.log(ajax.url + ': send ajax...');
         $.ajax({
             type: ajax.type,
@@ -15,18 +16,27 @@
                 codefalse: params
             },
             success: function success(data) {
-                _adapter(showId, data);
+                _adapter(showId, options, data);
             }
         });
     }
 
-    function _adapter(showId, data) {
+    function _adapter(showId, options, data) {
         $('#' + showId).find('.codefalse-input-options').show();
         var ul = $('#' + showId).find('.codefalse-input-options>ul');
         ul.empty();
         for (var n in data) {
             var obj = data[n];
-            ul.append('<li value="' + obj.userId + '">' + obj.username + '</li>');
+            var key = obj[options.key];
+            var value = '';
+            for (var i in options.value) {
+                var name = options.value[i];
+                if (value != '') {
+                    value += options.separator;
+                }
+                value += obj[name];
+            }
+            ul.append('<li value="' + key + '">' + value + '</li>');
         }
     }
     $.fn.codefalseInput = function (options, change) {
@@ -34,6 +44,9 @@
         var _this = $(this);
         // default options
         var defaults = {
+            key: 'id',
+            value: ['name'],
+            separator: '-',
             ajax: {
                 type: 'GET',
                 url: ''
@@ -64,7 +77,7 @@
                         change($(this).val());
                     }
                     if (defaults.ajax.url != null && defaults.ajax.url != '') {
-                        requestData(inputId, defaults.ajax, $(this).val());
+                        requestData(inputId, defaults, $(this).val());
                     }
                 });
                 var isHide = true;
@@ -91,7 +104,7 @@
             },
             adapter: function adapter(data) {
                 console.log('apapter data:' + data);
-                _adapter(inputId, data);
+                _adapter(inputId, defaults, data);
                 return this;
             }
         };
