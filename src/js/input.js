@@ -42,6 +42,7 @@
         let _this = $(this);
         // default options
         let defaults = {
+            placeholder: 'Please search...',
             key: 'id',
             value: ['name'],
             separator: '-',
@@ -62,7 +63,7 @@
                 let random = parseInt(Math.random() * 100000 + '');
                 let searchId = 'codefalse-search' + random;
                 let clazz = _this.attr('class');
-                let searchInput = '<input id="'+searchId+'" type="text" class="'+clazz+'"/>';
+                let searchInput = '<input id="'+searchId+'" type="text" class="'+clazz+'" placeholder="'+defaults.placeholder+'"/>';
                 _this.after(searchInput);
                 // add select option
                 inputId = 'codefalse-input' + random;
@@ -74,6 +75,8 @@
                 $('#' + searchId).after(selectOptionHtml);
                 //add event listener
                 $('#'+searchId).on('input', function () {
+                    //reset input
+                    _this.val('');
                     //call change
                     if(change != undefined && typeof(change) == 'function'){
                         change($(this).val());
@@ -105,7 +108,7 @@
                 return this;
             },
             adapter: function (data) {
-                console.log('apapter data:' + data);
+                console.log('apapter update...');
                 adapter(inputId, defaults, data);
                 return this;
             },

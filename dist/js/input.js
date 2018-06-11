@@ -103,7 +103,7 @@
                 return this;
             },
             adapter: function adapter(data) {
-                console.log('apapter data:' + data);
+                console.log('apapter update...');
                 _adapter(inputId, defaults, data);
                 return this;
             }
