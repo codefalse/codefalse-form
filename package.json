@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "gulp",
-    "uglify": "uglifyjs ./dist/js/input.js -o ./dist/js/input.min.js"
+    "input": "uglifyjs ./dist/js/input.js -o ./dist/js/input.min.js"
   },
   "repository": {
     "type": "git",

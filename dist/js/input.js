@@ -44,6 +44,7 @@
         var _this = $(this);
         // default options
         var defaults = {
+            placeholder: 'Please search...',
             key: 'id',
             value: ['name'],
             separator: '-',
@@ -64,7 +65,7 @@
                 var random = parseInt(Math.random() * 100000 + '');
                 var searchId = 'codefalse-search' + random;
                 var clazz = _this.attr('class');
-                var searchInput = '<input id="' + searchId + '" type="text" class="' + clazz + '"/>';
+                var searchInput = '<input id="' + searchId + '" type="text" class="' + clazz + '" placeholder="' + defaults.placeholder + '"/>';
                 _this.after(searchInput);
                 // add select option
                 inputId = 'codefalse-input' + random;
@@ -72,6 +73,8 @@
                 $('#' + searchId).after(selectOptionHtml);
                 //add event listener
                 $('#' + searchId).on('input', function () {
+                    //reset input
+                    _this.val('');
                     //call change
                     if (change != undefined && typeof change == 'function') {
                         change($(this).val());
