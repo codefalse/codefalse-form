@@ -86,14 +86,16 @@
                 var isHide = true;
                 $('#' + searchId).on('blur', function () {
                     if (isHide) {
-                        $(this).val('');
+                        if (!_this.val()) {
+                            $(this).val('');
+                        }
                         $('#' + inputId).find('.codefalse-input-options').hide();
                     }
                 });
                 $('#' + inputId + '>.codefalse-input-options').on('mouseenter', function () {
                     isHide = false;
                 });
-                $('#' + inputId + '>.codefalse-input-options').on('mouseleave', function (event) {
+                $('#' + inputId + '>.codefalse-input-options').on('mouseleave', function () {
                     isHide = true;
                 });
                 $('#' + inputId + '>.codefalse-input-options>ul').on('click', 'li', function () {
