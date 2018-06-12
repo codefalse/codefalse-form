@@ -3,7 +3,8 @@ let gulp = require('gulp'),
     clean = require('gulp-clean'),
     uglify = require('gulp-uglify'),
     uglifycss = require('gulp-uglifycss'),
-    sourcemaps = require('gulp-sourcemaps');
+    sourcemaps = require('gulp-sourcemaps'),
+    rename = require('gulp-rename');
 
 gulp.task('clean', () => {
     gulp.src('./dist')
@@ -11,13 +12,15 @@ gulp.task('clean', () => {
 });
 gulp.task('minjs', () => {
     gulp.src('./src/js/*.js')
-        .pipe(sourcemaps.init())
         .pipe(babel())
+        .pipe(sourcemaps.init())
+        .pipe(gulp.dest('./dist/js/'))
         .pipe(uglify({
             compress: {
                 drop_console: true
             }
         }))
+        .pipe(rename({extname: '.min.js'}))
         .pipe(sourcemaps.write())
         .pipe(gulp.dest('./dist/js/'));
 });
