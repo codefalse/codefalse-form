@@ -50,6 +50,7 @@
             key: 'id',
             value: ['name'],
             separator: '-',
+            delay: 200,
             ajax: {
                 type: 'GET',
                 url: ''
@@ -79,16 +80,25 @@
                 $('#' + searchId).after(selectOptionHtml);
                 //add event listener
                 $('#'+searchId).on('input', function () {
-                    //reset input
-                    _this.val('');
-                    clearOptions(inputId);
-                    //call change
-                    if(change != undefined && typeof(change) == 'function'){
-                        change($(this).val());
-                    }
-                    if(defaults.ajax.url != null && defaults.ajax.url != ''){
-                        requestData(inputId, defaults, $(this).val());
-                    }
+                    let self = $(this);
+                    let txt1 = self.val();
+                    setTimeout(function () {
+                        let txt2 = self.val();
+                        if(txt1 == txt2){
+                            clearTimeout();
+                            //reset input
+                            _this.val('');
+                            clearOptions(inputId);
+                            //call change
+                            if(change != undefined && typeof(change) == 'function'){
+                                change(txt2);
+                            }
+                            if(defaults.ajax.url != null && defaults.ajax.url != ''){
+                                requestData(inputId, defaults, txt2);
+                            }
+                        }
+                    }, defaults.delay);
+
                 });
                 let isHide = true;
                 $('#'+ searchId).on('blur', function () {
