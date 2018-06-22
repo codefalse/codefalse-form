@@ -17,6 +17,7 @@
 .codefalse-input-options>ul>li{
     padding: 5px;
 }
+.codefalse-input-options>ul>li:first-child,
 .codefalse-input-options>ul>li:hover{
     background-color: #6495ED;
     color: white;

@@ -20,15 +20,18 @@
 <script src="../src/js/input.js"></script>
 <script>
     $().ready(function () {
-         $('#filed').codefalseInput({
+         var codefalseInput = $('#filed').codefalseInput({
              key: 'id',
              value: ['name', 'age']
          }, function (text) {
-             console.log(text)
-         }).adapter([
-             {id:1, name: 'song', age: 23},
-             {id:2, name: 'aaa', age: 34}
-         ]);
+             console.log(text);
+             if(text == '1'){
+                 codefalseInput.adapter([
+                     {id:1, name: 'song', age: 23},
+                     {id:2, name: 'aaa', age: 34}
+                 ]);
+             }
+         });
     });
 </script>
 </body>

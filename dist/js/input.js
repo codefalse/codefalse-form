@@ -24,7 +24,6 @@
     function _adapter(showId, options, data) {
         $('#' + showId).find('.codefalse-input-options').show();
         var ul = $('#' + showId).find('.codefalse-input-options>ul');
-        ul.empty();
         for (var n in data) {
             var obj = data[n];
             var key = obj[options.key];
@@ -39,6 +38,11 @@
             ul.append('<li value="' + key + '">' + value + '</li>');
         }
     }
+
+    function clearOptions(inputId) {
+        $('#' + inputId + '>.codefalse-input-options>ul').empty();
+    }
+
     $.fn.codefalseInput = function (options, change) {
         console.log('codefalse input starting...');
         var _this = $(this);
@@ -75,6 +79,7 @@
                 $('#' + searchId).on('input', function () {
                     //reset input
                     _this.val('');
+                    clearOptions(inputId);
                     //call change
                     if (change != undefined && typeof change == 'function') {
                         change($(this).val());
@@ -104,6 +109,12 @@
                     _this.val(val);
                     $('#' + searchId).val(text);
                     $('#' + inputId).find('.codefalse-input-options').hide();
+                });
+                //enter keydown
+                $('#' + searchId).on('keypress', function (event) {
+                    if (event.keyCode == 13) {
+                        $('#' + inputId + '>.codefalse-input-options>ul').find('li:first').trigger('click');
+                    }
                 });
                 return this;
             },
