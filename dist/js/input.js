@@ -22,25 +22,27 @@
     }
 
     function _adapter(showId, options, data) {
-        $('#' + showId).find('.codefalse-input-options').show();
-        var ul = $('#' + showId).find('.codefalse-input-options>ul');
-        for (var n in data) {
-            var obj = data[n];
-            var key = obj[options.key];
-            var value = '';
-            for (var i in options.value) {
-                var name = options.value[i];
-                if (value != '') {
-                    value += options.separator;
+        if (data.length > 0) {
+            $('#' + showId).find('.codefalse-input-options').show();
+            var ul = $('#' + showId).find('.codefalse-input-options>ul');
+            for (var n in data) {
+                var obj = data[n];
+                var key = obj[options.key];
+                var value = '';
+                for (var i in options.value) {
+                    var name = options.value[i];
+                    if (value != '') {
+                        value += options.separator;
+                    }
+                    value += obj[name];
                 }
-                value += obj[name];
+                ul.append('<li value="' + key + '">' + value + '</li>');
             }
-            ul.append('<li value="' + key + '">' + value + '</li>');
         }
     }
 
     function clearOptions(inputId) {
-        $('#' + inputId + '>.codefalse-input-options>ul').empty();
+        $('#' + inputId + '>.codefalse-input-options').hide().find('ul').empty();
     }
 
     $.fn.codefalseInput = function (options, change) {
@@ -78,15 +80,20 @@
                 $('#' + searchId).after(selectOptionHtml);
                 //add event listener
                 $('#' + searchId).on('input', function () {
+                    //reset input
+                    _this.val('');
+                    clearOptions(inputId);
+
                     var self = $(this);
                     var txt1 = self.val();
                     setTimeout(function () {
                         var txt2 = self.val();
+                        if (txt2 == '') {
+                            console.log('++++++++');
+                            return;
+                        }
                         if (txt1 == txt2) {
                             clearTimeout();
-                            //reset input
-                            _this.val('');
-                            clearOptions(inputId);
                             //call change
                             if (change != undefined && typeof change == 'function') {
                                 change(txt2);
