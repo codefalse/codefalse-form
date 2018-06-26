@@ -3,6 +3,8 @@
 ```html
 <link href="../src/css/input.css" rel="stylesheet" type="text/css" />
 ...
+<input id="filed" class="demo" type="text" name="codefalse"/>
+...
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
 <script src="../src/js/input.js"></script>
 
