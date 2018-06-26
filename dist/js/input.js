@@ -63,6 +63,7 @@
         $.extend(defaults, options);
 
         var inputId = '';
+        var searchId = '';
         var methods = {
             init: function init() {
                 console.log('codefalse input init...');
@@ -70,7 +71,7 @@
                 _this.attr('type', 'hidden');
                 // clone input
                 var random = parseInt(Math.random() * 100000 + '');
-                var searchId = 'codefalse-search' + random;
+                searchId = 'codefalse-search' + random;
                 var clazz = _this.attr('class');
                 var searchInput = '<input id="' + searchId + '" type="text" class="' + clazz + '" placeholder="' + defaults.placeholder + '"/>';
                 _this.after(searchInput);
@@ -137,6 +138,18 @@
             adapter: function adapter(data) {
                 console.log('apapter update...');
                 _adapter(inputId, defaults, data);
+                return this;
+            },
+            show: function show() {
+                $('#' + searchId).show();
+                return this;
+            },
+            hide: function hide() {
+                $('#' + searchId).hide();
+                $('#' + searchId).val('');
+                //reset input
+                _this.val('');
+                clearOptions(inputId);
                 return this;
             }
         };

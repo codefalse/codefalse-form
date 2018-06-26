@@ -14,7 +14,10 @@
 <body>
 <div class="demo">
     <input id="filed" class="demo" type="text" name="codefalse"/>
-    <div>我是看热卖的</div>
+    <div>
+        <input type="button" id="show-btn" value="显示" />
+        <input type="button" id="hide-btn" value="隐藏" />
+    </div>
 </div>
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
 <script src="../src/js/input.js"></script>
@@ -36,6 +39,12 @@
                  {id:4, name: 'jjjjjjjjjj', age: 45}
              ]);
          });
+         $('#show-btn').on('click', function () {
+             codefalseInput.show();
+         });
+        $('#hide-btn').on('click', function () {
+            codefalseInput.hide();
+        });
     });
 </script>
 </body>

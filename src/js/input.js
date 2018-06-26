@@ -61,6 +61,7 @@
         $.extend(defaults, options);
 
         let inputId = '';
+        let searchId = '';
         let methods = {
             init: function () {
                 console.log('codefalse input init...');
@@ -68,7 +69,7 @@
                 _this.attr('type', 'hidden');
                 // clone input
                 let random = parseInt(Math.random() * 100000 + '');
-                let searchId = 'codefalse-search' + random;
+                searchId = 'codefalse-search' + random;
                 let clazz = _this.attr('class');
                 let searchInput = '<input id="'+searchId+'" type="text" class="'+clazz+'" placeholder="'+defaults.placeholder+'"/>';
                 _this.after(searchInput);
@@ -142,6 +143,18 @@
                 adapter(inputId, defaults, data);
                 return this;
             },
+            show: function () {
+                $('#'+searchId).show();
+                return this;
+            },
+            hide: function () {
+                $('#'+searchId).hide();
+                $('#'+searchId).val('');
+                //reset input
+                _this.val('');
+                clearOptions(inputId);
+                return this;
+            }
         };
 
         methods.init();
