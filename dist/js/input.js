@@ -144,6 +144,7 @@
                 console.log('reset codefalse...');
                 _this.val(key);
                 $('#' + searchId).val(value);
+                return this;
             },
             show: function show() {
                 $('#' + searchId).show();
