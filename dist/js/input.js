@@ -140,6 +140,11 @@
                 _adapter(inputId, defaults, data);
                 return this;
             },
+            reset: function reset(key, value) {
+                console.log('reset codefalse...');
+                _this.val(key);
+                $('#' + searchId).val(value);
+            },
             show: function show() {
                 $('#' + searchId).show();
                 return this;
