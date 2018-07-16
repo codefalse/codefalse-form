@@ -4,7 +4,8 @@ let gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     uglifycss = require('gulp-uglifycss'),
     sourcemaps = require('gulp-sourcemaps'),
-    rename = require('gulp-rename');
+    rename = require('gulp-rename'),
+    concat = require('gulp-concat');
 
 gulp.task('clean', () => {
     gulp.src('./dist')
@@ -27,8 +28,29 @@ gulp.task('minjs', () => {
 gulp.task('mincss', () => {
     gulp.src('./src/css/*.css')
         .pipe(uglifycss())
-        .pipe(gulp.dest('./dist/css/'))
+        .pipe(gulp.dest('./dist/css/'));
 });
+gulp.task('concatjs', () => {
+    gulp.src('./src/js/*.js')
+        .pipe(concat('codefalse.all.js'))
+        .pipe(babel())
+        .pipe(sourcemaps.init())
+        .pipe(gulp.dest('./dist/js/'))
+        .pipe(uglify({
+            compress: {
+                drop_console: true
+            }
+        }))
+        .pipe(rename({extname: '.min.js'}))
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest('./dist/js/'));
+});
+gulp.task('concatcss', () => {
+    gulp.src('./src/css/*.css')
+        .pipe(concat('codefalse.all.css'))
+        .pipe(uglifycss())
+        .pipe(gulp.dest('./dist/css/'));
+})
 gulp.task('default', ['clean'], () => {
-    gulp.start('minjs', 'mincss');
+    gulp.start('minjs', 'mincss', 'concatjs', 'concatcss');
 });
