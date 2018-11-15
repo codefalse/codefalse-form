@@ -73,7 +73,7 @@
                 let random = parseInt(Math.random() * 100000 + '');
                 searchId = 'codefalse-search' + random;
                 let clazz = _this.attr('class');
-                let searchInput = '<input id="'+searchId+'" name="'+defaults.searchName+'" type="text" class="'+clazz+'" placeholder="'+defaults.placeholder+'"/>';
+                let searchInput = '<input id="'+searchId+'" name="'+defaults.searchName+'" type="text" class="'+clazz+'" placeholder="'+defaults.placeholder+'" autocomplete="off"/>';
                 _this.after(searchInput);
                 // add select option
                 inputId = 'codefalse-input' + random;
