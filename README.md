@@ -1,4 +1,4 @@
-具体示例请进入`demo`查看
+所有组件依赖`jquery`，具体示例请进入`demo`查看
 - <a href="#codefalse-input-自动搜索输入框" target="_self">Input输入框搜索</a>
     + <a href="#options-object" target="_self">Options</a>
     + <a href="#callback-functiontext" target="_self">Callback</a>
