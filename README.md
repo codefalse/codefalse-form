@@ -1,6 +1,7 @@
 具体示例请进入`demo`查看
 - [Input输入框搜索](https://github.com/codefalse/codefalse-form#codefalse-input-自动搜索输入框)
-    + [Options](https://github.com/codefalse/codefalse-form#options-object)
+        
+    + <a href="#options-object" target="_self">Options</a>
     + [Callback](https://github.com/codefalse/codefalse-form#callback-function(text))
     + [Methods](https://github.com/codefalse/codefalse-form#methods)
     + [ChangeLog](https://github.com/codefalse/codefalse-form#changelog)
