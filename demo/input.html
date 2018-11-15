@@ -25,18 +25,20 @@
     $().ready(function () {
          var codefalseInput = $('#filed').codefalseInput({
              key: 'id',
-             value: ['name', 'age']
+             value: ['name', 'age'],
+             allowInputText: true,
+             searchName: 'customerName'
          }, function (text) {
              console.log(text);
              if(text == '1'){
                  codefalseInput.adapter([
-                     {id:1, name: 'song', age: 23},
-                     {id:2, name: 'aaa', age: 34}
+                     {id:1, name: 'c', age: 23},
+                     {id:2, name: 'c++', age: 34}
                  ]);
              }
              codefalseInput.adapter([
-                 {id:3, name: 'yyyyyyyy', age: 45},
-                 {id:4, name: 'jjjjjjjjjj', age: 45}
+                 {id:3, name: 'java', age: 45},
+                 {id:4, name: 'php', age: 45}
              ]);
          });
          $('#show-btn').on('click', function () {

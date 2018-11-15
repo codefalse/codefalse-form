@@ -58,7 +58,9 @@
             ajax: {
                 type: 'GET',
                 url: ''
-            }
+            },
+            allowInputText: false,
+            searchName: ''
         };
         $.extend(defaults, options);
 
@@ -73,7 +75,7 @@
                 var random = parseInt(Math.random() * 100000 + '');
                 searchId = 'codefalse-search' + random;
                 var clazz = _this.attr('class');
-                var searchInput = '<input id="' + searchId + '" type="text" class="' + clazz + '" placeholder="' + defaults.placeholder + '"/>';
+                var searchInput = '<input id="' + searchId + '" name="' + defaults.searchName + '" type="text" class="' + clazz + '" placeholder="' + defaults.placeholder + '"/>';
                 _this.after(searchInput);
                 // add select option
                 inputId = 'codefalse-input' + random;
@@ -108,7 +110,7 @@
                 var isHide = true;
                 $('#' + searchId).on('blur', function () {
                     if (isHide) {
-                        if (!_this.val()) {
+                        if (!_this.val() && !defaults.allowInputText) {
                             $(this).val('');
                         }
                         $('#' + inputId).find('.codefalse-input-options').hide();
