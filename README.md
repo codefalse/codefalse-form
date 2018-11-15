@@ -41,6 +41,8 @@ data中值必须和`options.key`和`options.value`存在对应关系，否则无
 - show()：显示
 - hide()：隐藏
 ### ChangeLog
+- v1.3.1
+1. 关闭搜索框的autoComplete的bug
 - v1.3.0
 1. 完善输入搜索框，实现可自主输入文本值，而不必全部是搜索结果
 2. add options: allowInputText, searchName
