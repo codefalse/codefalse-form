@@ -9,17 +9,17 @@ $('#codefalse-input').codefalseInput(options[, callback]);
 ### Options: object
 ```json
 {
-    placeholder: 'Please search...',
-    key: 'id',
-    value: ['name'],
-    separator: '-',
-    delay: 200,
-    ajax: {
-        type: 'GET',
-        url: ''
+    "placeholder": "Please search...",
+    "key": "id",
+    "value": ["name"],
+    "separator": "-",
+    "delay": 200,
+    "ajax": {
+        "type": "GET",
+        "url": ""
     },
-    allowInputText: false,
-    searchName: ''
+    "allowInputText": false,
+    "searchName": ""
 }
 ```
 - placeholder: 输入框提示信息
