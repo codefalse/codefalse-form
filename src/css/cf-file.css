@@ -20,6 +20,10 @@
     position: absolute;
     height: 30px;
     background-color: white;
+    text-align: center;
+}
+.codefalse-file-operation>i{
+    cursor: pointer;
 }
 .codefalse-file-add{
     text-align: center;

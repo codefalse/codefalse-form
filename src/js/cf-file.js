@@ -13,7 +13,9 @@
     function _createFileItem(options) {
         let item =
             '<div class="codefalse-file-item" style="height: '+options.height+';width: '+options.width+';">' +
-            '   <div class="codefalse-file-operation" style="width: '+options.width+';">我是操作</div>' +
+            '   <div class="codefalse-file-operation" style="width: '+options.width+';">'+
+            '      <i class="codefalse-file-del">删除</i>' +
+            '   </div>' +
             '   <img src="" />' +
             '</div>';
         return item;
@@ -44,12 +46,20 @@
                 let item = _createFileItem(fileOptions);
                 let addDom = $('#'+codefalseId).find('.codefalse-file-add');
                 addDom.before(item);
-                let img = addDom.prev().find('img');
+                //监听文件块事件
+                let fileDom = addDom.prev();
+                //图片加载
+                let img = fileDom.find('img');
                 let url = window.URL.createObjectURL(file);
                 img.attr('src', url);
                 img.on('load', () => {
                     window.URL.revokeObjectURL(img.attr('src'));
                 });
+                //图片删除
+                fileDom.find('.codefalse-file-del').on('click', () => {
+                    fileDom.remove();
+                });
+                //图片预览
             }
         });
 
