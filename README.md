@@ -1,10 +1,9 @@
 具体示例请进入`demo`查看
-- [Input输入框搜索](https://github.com/codefalse/codefalse-form#codefalse-input-自动搜索输入框)
-        
+- <a href="#codefalse-input-自动搜索输入框" target="_self">Input输入框搜索</a>
     + <a href="#options-object" target="_self">Options</a>
-    + [Callback](https://github.com/codefalse/codefalse-form#callback-function(text))
-    + [Methods](https://github.com/codefalse/codefalse-form#methods)
-    + [ChangeLog](https://github.com/codefalse/codefalse-form#changelog)
+    + <a href="#callback-functiontext" target="_self">Callback</a>
+    + <a href="#methods" target="_self">Methods</a>
+    + <a href="#changelog" target="_self">ChangeLog</a>
 ## Codefalse-Input 自动搜索输入框
 ![Codefalse-Input](./snapshot/input.jpg)
 [直接下载](https://github.com/codefalse/codefalse-form/releases)
