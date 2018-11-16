@@ -7,23 +7,14 @@
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
 </head>
 <body>
-<form id="form" enctype="multipart/form-data">
-    <input id="fileDemo" type="file" />
-    <input type="submit" value="体积哦啊"/>
-</form>
+<input type="file" id="fileDemo" />
 
 <script src="../src/modaal/js/modaal.js"></script>
 <script src="../src/js/cf-file.js"></script>
 <script>
     $().ready(function () {
-        $('#fileDemo').codefalseFile();
-
-        let fd = document.getElementById("form");
-
-        $('#form').on('submit', () => {
-            let f = new FormData(fd)
-            console.log(f)
-        });
+        let file = $('#fileDemo').codefalseFile();
+        file.adapter([''])
     })
 </script>
 </body>
