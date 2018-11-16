@@ -25,14 +25,15 @@ gulp.task('minjs', () => {
         .pipe(sourcemaps.write())
         .pipe(gulp.dest('./dist/js/'));
 });
-gulp.task('mincss', () => {
+gulp.task('minCss', () => {
     gulp.src('./src/css/*.css')
         .pipe(uglifycss())
         .pipe(gulp.dest('./dist/css/'));
 });
-gulp.task('concatjs', () => {
-    gulp.src('./src/js/*.js')
-        .pipe(concat('codefalse-form.all.js'))
+gulp.task('concatJs', () => {
+    //file module
+    gulp.src(['./src/modaal/js/modaal.js', './src/js/cf-file.js'])
+        .pipe(concat('cf-file.js'))
         .pipe(babel())
         .pipe(sourcemaps.init())
         .pipe(gulp.dest('./dist/js/'))
@@ -45,11 +46,21 @@ gulp.task('concatjs', () => {
         .pipe(sourcemaps.write())
         .pipe(gulp.dest('./dist/js/'));
 });
-gulp.task('concatcss', () => {
-    gulp.src('./src/css/*.css')
+gulp.task('concatAllJS', ['concatJs'], () => {
+    gulp.src('./dist/js/*.min.js')
+        .pipe(concat('codefalse-form.all.js'))
+        .pipe(gulp.dest('./dist/js/'));
+});
+gulp.task('concatAllCss', ['minCss'], () => {
+    gulp.src('./dist/css/*.css')
         .pipe(concat('codefalse-form.all.css'))
-        .pipe(uglifycss())
         .pipe(gulp.dest('./dist/css/'));
+});
+gulp.task('copy', () => {
+    gulp.src('./src/iconfont/*')
+        .pipe(gulp.dest('./dist/iconfont/'));
+    gulp.src('./src/modaal/**/*')
+        .pipe(gulp.dest('./dist/modaal/'))
 })
 gulp.task('default', ['clean'], () => {
     gulp.start('minjs', 'mincss', 'concatjs', 'concatcss');

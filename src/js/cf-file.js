@@ -1,5 +1,6 @@
 /**
  * Codefalse-Form module file.
+ * use jquery 3.3.1
  */
 (function ($) {
 
@@ -41,7 +42,7 @@
             console.log(files)
             for (let i = 0; i < files.length; i++){
                 let file = files[i];
-                // fileReader.readAsDataURL(file);
+
                 let item = _createFileItem(fileOptions);
                 let addDom = $('#'+codefalseId).find('.codefalse-file-add');
                 addDom.before(item);
@@ -72,6 +73,14 @@
                 } else {
                     //其他类型
                 }
+                fileDom.on('mouseenter', () => {
+                    let fileOperation = fileDom.find('.codefalse-file-operation');
+                    fileOperation.show();
+                });
+                fileDom.on('mouseleave', () => {
+                    let fileOperation = fileDom.find('.codefalse-file-operation');
+                    fileOperation.hide();
+                });
                 //图片删除
                 fileDom.find('.codefalse-file-del').on('click', () => {
                     fileDom.remove();

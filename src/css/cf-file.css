@@ -23,6 +23,7 @@
     background-color: black;
     text-align: right;
     opacity: 0.5;
+    display: none;
 }
 .codefalse-file-operation>i{
     cursor: pointer;
