@@ -1375,12 +1375,12 @@
 		return cf;
 	}
 
-	function _createFileItem(options) {
-		var item = '<div class="codefalse-file-item" style="height: ' + options.height + ';width: ' + options.width + ';">' + '   <div class="codefalse-file-operation" style="width: ' + options.width + ';">' + '      <i class="codefalse-file-del codefalse-font icon-delete"></i>' + '      <i data-modaal-content-source="" class="codefalse-file-yulan codefalse-font icon-yulan"></i>' + '   </div>' + '   <img src="" />' + '</div>';
+	function _createFileItem(i, options) {
+		var item = '<div class="codefalse-file-item" style="height: ' + options.height + ';width: ' + options.width + ';">' + '   <div class="codefalse-file-operation" style="width: ' + options.width + ';">' + '      <i key="' + i + '" class="codefalse-file-del codefalse-font icon-delete"></i>' + '      <i data-modaal-content-source="" class="codefalse-file-yulan codefalse-font icon-yulan"></i>' + '   </div>' + '   <img src="" />' + '</div>';
 		return item;
 	}
 
-	$.fn.codefalseFile = function (options) {
+	$.fn.codefalseFile = function (options, callback) {
 		var _this2 = this;
 
 		var _this = $(this);
@@ -1393,14 +1393,15 @@
 		var fileOptions = $.extend({}, defaults, options);
 
 		//监控input选择文件
+		var fileArray = [];
 		_this.on('change', function () {
 			var files = $(_this2)[0].files;
-			console.log(files);
 
 			var _loop = function _loop(i) {
 				var file = files[i];
+				fileArray.push(file);
 
-				var item = _createFileItem(fileOptions);
+				var item = _createFileItem(i, fileOptions);
 				var addDom = $('#' + codefalseId).find('.codefalse-file-add');
 				addDom.before(item);
 				//绑定modaal
@@ -1427,17 +1428,30 @@
 					img.on('load', function () {
 						window.URL.revokeObjectURL(img.attr('src'));
 					});
-				} else {}
-				//其他类型
-
+				} else {
+					//其他类型
+				}
+				fileDom.on('mouseenter', function () {
+					var fileOperation = fileDom.find('.codefalse-file-operation');
+					fileOperation.show();
+				});
+				fileDom.on('mouseleave', function () {
+					var fileOperation = fileDom.find('.codefalse-file-operation');
+					fileOperation.hide();
+				});
 				//图片删除
 				fileDom.find('.codefalse-file-del').on('click', function () {
+					var key = $(_this2).attr('key');
+					fileArray.splice(key, 1);
 					fileDom.remove();
 				});
 			};
 
 			for (var i = 0; i < files.length; i++) {
 				_loop(i);
+			}
+			if (typeof callback === 'function') {
+				callback(fileArray);
 			}
 		});
 

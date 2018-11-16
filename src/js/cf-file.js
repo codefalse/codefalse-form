@@ -14,11 +14,11 @@
         return cf;
     }
 
-    function _createFileItem(options) {
+    function _createFileItem(i, options) {
         let item =
             '<div class="codefalse-file-item" style="height: '+options.height+';width: '+options.width+';">' +
             '   <div class="codefalse-file-operation" style="width: '+options.width+';">'+
-            '      <i class="codefalse-file-del codefalse-font icon-delete"></i>' +
+            '      <i key="'+i+'" class="codefalse-file-del codefalse-font icon-delete"></i>' +
             '      <i data-modaal-content-source="" class="codefalse-file-yulan codefalse-font icon-yulan"></i>' +
             '   </div>' +
             '   <img src="" />' +
@@ -26,7 +26,7 @@
         return item;
     }
 
-    $.fn.codefalseFile = function (options) {
+    $.fn.codefalseFile = function (options, callback) {
         let _this = $(this);
         let codefalseId = 'codefalse-file-' + parseInt(Math.random() * 100000 + '');
         let defaults = {
@@ -37,13 +37,14 @@
         let fileOptions = $.extend({}, defaults, options);
 
         //监控input选择文件
+        let fileArray = [];
         _this.on('change', () => {
             let files = $(this)[0].files;
-            console.log(files)
             for (let i = 0; i < files.length; i++){
                 let file = files[i];
+                fileArray.push(file);
 
-                let item = _createFileItem(fileOptions);
+                let item = _createFileItem(i, fileOptions);
                 let addDom = $('#'+codefalseId).find('.codefalse-file-add');
                 addDom.before(item);
                 //绑定modaal
@@ -83,8 +84,13 @@
                 });
                 //图片删除
                 fileDom.find('.codefalse-file-del').on('click', () => {
+                    let key = $(this).attr('key');
+                    fileArray.splice(key, 1);
                     fileDom.remove();
                 });
+            }
+            if (typeof (callback) === 'function'){
+                callback(fileArray);
             }
         });
 
