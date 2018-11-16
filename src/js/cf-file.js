@@ -14,7 +14,8 @@
         let item =
             '<div class="codefalse-file-item" style="height: '+options.height+';width: '+options.width+';">' +
             '   <div class="codefalse-file-operation" style="width: '+options.width+';">'+
-            '      <i class="codefalse-file-del">删除</i>' +
+            '      <i class="codefalse-file-del codefalse-font icon-delete"></i>' +
+            '      <i data-modaal-content-source="" class="codefalse-file-yulan codefalse-font icon-yulan"></i>' +
             '   </div>' +
             '   <img src="" />' +
             '</div>';
@@ -31,11 +32,6 @@
         };
         let fileOptions = $.extend({}, defaults, options);
 
-        // let fileReader = new FileReader();
-        // fileReader.onload = function(res){
-        //     console.log(res)
-        // };
-
         //监控input选择文件
         _this.on('change', () => {
             let files = $(this)[0].files;
@@ -46,20 +42,37 @@
                 let item = _createFileItem(fileOptions);
                 let addDom = $('#'+codefalseId).find('.codefalse-file-add');
                 addDom.before(item);
+                //绑定modaal
+                $('.codefalse-file-yulan').modaal({
+                    type: 'image',
+                    before_open: function (e) {
+                        let url = window.URL.createObjectURL(file);
+                        console.log('加载：'+url);
+                        e.target.setAttribute('href', url);
+                    },
+                    before_close: function (e) {
+                        let url = e.find('img').attr('src');
+                        console.log('销毁：'+url);
+                        window.URL.revokeObjectURL(url);
+                    }
+                });
                 //监听文件块事件
                 let fileDom = addDom.prev();
                 //图片加载
                 let img = fileDom.find('img');
-                let url = window.URL.createObjectURL(file);
-                img.attr('src', url);
-                img.on('load', () => {
-                    window.URL.revokeObjectURL(img.attr('src'));
-                });
+                if (fileOptions.uploadType === 'normal') {
+                    let url = window.URL.createObjectURL(file);
+                    img.attr('src', url);
+                    img.on('load', () => {
+                        window.URL.revokeObjectURL(img.attr('src'));
+                    });
+                } else {
+                    //其他类型
+                }
                 //图片删除
                 fileDom.find('.codefalse-file-del').on('click', () => {
                     fileDom.remove();
                 });
-                //图片预览
             }
         });
 

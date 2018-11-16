@@ -1,4 +1,4 @@
-@import "../iconfont/iconfont.css";
+@import "../../static/iconfont/iconfont.css";
 .codefalse-file>.codefalse-file-item,
 .codefalse-file>.codefalse-file-item>img{
     height: 100%;
@@ -19,11 +19,19 @@
 .codefalse-file-operation{
     position: absolute;
     height: 30px;
-    background-color: white;
-    text-align: center;
+    background-color: black;
+    text-align: right;
+    opacity: 0.5;
 }
 .codefalse-file-operation>i{
     cursor: pointer;
+    line-height: 30px;
+    font-size: 20px;
+    margin-right: 5px;
+    color: white;
+}
+.codefalse-file-operation>i:hover{
+    color: cornflowerblue;
 }
 .codefalse-file-add{
     text-align: center;
