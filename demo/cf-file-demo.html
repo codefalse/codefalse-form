@@ -3,21 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link href="../static/modaal/css/modaal.css" rel="stylesheet"/>
     <link href="../src/css/cf-file.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
 </head>
 <body>
 <input id="fileDemo" type="file" />
-<i data-modaal-content-source="" class="image">我是图片</i>
-<script src="../static/modaal/js/modaal.js"></script>
+<script src="../src/modaal/js/modaal.js"></script>
 <script src="../src/js/cf-file.js"></script>
 <script>
     $().ready(function () {
         $('#fileDemo').codefalseFile();
-        $('.image').modaal({
-            type: 'image'
-        });
     })
 </script>
 </body>

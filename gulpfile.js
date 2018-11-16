@@ -32,7 +32,7 @@ gulp.task('mincss', () => {
 });
 gulp.task('concatjs', () => {
     gulp.src('./src/js/*.js')
-        .pipe(concat('codefalse.all.js'))
+        .pipe(concat('codefalse-form.all.js'))
         .pipe(babel())
         .pipe(sourcemaps.init())
         .pipe(gulp.dest('./dist/js/'))
@@ -47,7 +47,7 @@ gulp.task('concatjs', () => {
 });
 gulp.task('concatcss', () => {
     gulp.src('./src/css/*.css')
-        .pipe(concat('codefalse.all.css'))
+        .pipe(concat('codefalse-form.all.css'))
         .pipe(uglifycss())
         .pipe(gulp.dest('./dist/css/'));
 })

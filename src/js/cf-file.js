@@ -1,3 +1,6 @@
+/**
+ * Codefalse-Form module file.
+ */
 (function ($) {
 
     function _initComponent(id, options) {
