@@ -1,5 +1,7 @@
 'use strict';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 /*!
 	Modaal - accessible modals - v0.4.4
 	by Humaan, for all humans.
@@ -671,7 +673,9 @@
 				// define the source, check if content_source option exists, and use that or fall back to href.
 				var this_img_src;
 				var img_src_error = false;
-				if (self.$elem.attr('data-modaal-content-source')) {
+				if (self.scope.source) {
+					this_img_src = self.scope.source;
+				} else if (self.$elem.attr('data-modaal-content-source')) {
 					this_img_src = self.$elem.attr('data-modaal-content-source');
 				} else if (self.$elem.attr('href')) {
 					this_img_src = self.$elem.attr('href');
@@ -1371,16 +1375,23 @@
 (function ($) {
 
 	function _initComponent(id, options) {
-		var cf = '<div id="' + id + '" class="codefalse-file">' + '    <div class="codefalse-file-item codefalse-file-add" style="height: ' + options.height + ';width: ' + options.width + ';">' + '        <i class="codefalse-font icon-add" style="line-height: ' + options.height + ';"></i>' + '    </div>' + '</div>';
+		var cf = '<div id="' + id + '" class="codefalse-file">' + '    <div class="codefalse-file-item file-add" style="height: ' + options.height + ';width: ' + options.width + ';">' + '        <i class="codefalse-font icon-add" style="line-height: ' + options.height + ';"></i>' + '    </div>' + '</div>';
 		return cf;
 	}
 
-	function _createFileItem(options) {
-		var item = '<div class="codefalse-file-item" style="height: ' + options.height + ';width: ' + options.width + ';">' + '   <div class="codefalse-file-operation" style="width: ' + options.width + ';">' + '      <i class="codefalse-file-del codefalse-font icon-delete"></i>' + '      <i class="codefalse-file-yulan codefalse-font icon-yulan"></i>' + '   </div>' + '   <img src="" />' + '   <input type="hidden" name="' + options.name + '"/>' + '</div>';
-		return item;
+	function _createFileItem(options, codefalseId, src) {
+		var item = '<div class="codefalse-file-item file-item" style="height: ' + options.height + ';width: ' + options.width + ';">' + '   <div class="codefalse-file-operation" style="width: ' + options.width + ';">' + '      <i class="codefalse-file-del codefalse-font icon-delete"></i>' + '      <i class="codefalse-file-yulan codefalse-font icon-yulan"></i>' + '   </div>' + '   <img src="' + src + '" />' + '   <input type="hidden" name="' + options.name + '" value="' + src + '"/>' + '</div>';
+		var addDom = $('#' + codefalseId).find('.file-add');
+		addDom.before(item);
+
+		//绑定modaal
+		addDom.prev().find('.codefalse-file-yulan').modaal({
+			type: 'image',
+			content_source: src
+		});
 	}
 
-	$.fn.codefalseFile = function (options) {
+	$.fn.codefalseFile = function (options, callback) {
 		var _this2 = this;
 
 		var _this = $(this);
@@ -1396,64 +1407,63 @@
 
 		_this.on('change', function () {
 			var files = $(_this2)[0].files;
-
-			var _loop = function _loop(i) {
+			for (var i = 0; i < files.length; i++) {
 				var file = files[i];
-
-				var item = _createFileItem(fileOptions);
-				var addDom = $('#' + codefalseId).find('.codefalse-file-add');
-				addDom.before(item);
-
-				//绑定modaal
-				$('.codefalse-file-yulan').modaal({ type: 'image' });
-
-				//监听文件块事件
-				var fileDom = addDom.prev();
-				//图片加载
-				var img = fileDom.find('img');
-				var yulan = fileDom.find('i.codefalse-file-yulan');
-				var fileInput = fileDom.find('input');
+				//读取文件
 
 				var fileReader = new FileReader();
 				fileReader.readAsDataURL(file);
 				fileReader.onload = function (e) {
-					img.attr('src', e.target.result);
-					yulan.attr('href', e.target.result);
-					fileInput.val(e.target.result);
+					_createFileItem(fileOptions, codefalseId, e.target.result);
 				};
-
-				fileDom.on('mouseenter', function () {
-					var fileOperation = fileDom.find('.codefalse-file-operation');
-					fileOperation.show();
-				});
-				fileDom.on('mouseleave', function () {
-					var fileOperation = fileDom.find('.codefalse-file-operation');
-					fileOperation.hide();
-				});
-				//图片删除
-				fileDom.find('.codefalse-file-del').on('click', function () {
-					fileDom.remove();
-				});
-			};
-
-			for (var i = 0; i < files.length; i++) {
-				_loop(i);
 			}
 		});
 
 		var methods = {
-			init: function init() {
+			_init: function _init() {
 				console.log('start codefalse file......');
 				//隐藏文件选择
 				_this.attr("style", "display:none");
 				//初始化文件选择组件
 				_this.after(_initComponent(codefalseId, fileOptions));
 				//监听添加事件
-				$('.codefalse-file-add>i').on('click', function () {
+				$('.file-add>i').on('click', function () {
 					_this.trigger('click');
 				});
+				//监听文件项事件
+				$('#' + codefalseId).on('mouseenter', '.file-item', function () {
+					var fileOperation = $(this).find('.codefalse-file-operation');
+					fileOperation.show();
+				});
+				$('#' + codefalseId).on('mouseleave', '.file-item', function () {
+					var fileOperation = $(this).find('.codefalse-file-operation');
+					fileOperation.hide();
+				});
+				//图片删除
+				$('#' + codefalseId).on('click', '.codefalse-file-del', function () {
+					var fileDom = $(this).parent().parent();
+					var img = fileDom.find('img');
+					var src = img.attr('src');
+					if (typeof callback === 'function') {
+						callback(src);
+					}
+					fileDom.remove();
+				});
+			},
+			adapter: function adapter(images) {
+				if ((typeof images === 'undefined' ? 'undefined' : _typeof(images)) === "object") {
+					var len = images.length;
+					if (len === undefined) {
+						console.error('adapter params error.');
+						return;
+					}
+					for (var i = 0; i < images.length; i++) {
+						_createFileItem(fileOptions, codefalseId, images[i]);
+					}
+				}
 			}
 		};
-		methods.init();
+		methods._init();
+		return methods;
 	};
 })(jQuery);

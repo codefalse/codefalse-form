@@ -63,5 +63,5 @@ gulp.task('copy', () => {
         .pipe(gulp.dest('./dist/modaal/'))
 })
 gulp.task('default', ['clean'], () => {
-    gulp.start('minjs', 'mincss', 'concatjs', 'concatcss');
+    gulp.run('minjs', 'mincss', 'concatjs', 'concatcss');
 });

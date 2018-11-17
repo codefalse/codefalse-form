@@ -13,8 +13,11 @@
 <script src="../src/js/cf-file.js"></script>
 <script>
     $().ready(function () {
-        let file = $('#fileDemo').codefalseFile();
-        file.adapter([''])
+        let file = $('#fileDemo').codefalseFile({}, function (res) {
+            console.log(res)
+        });
+        file.adapter(['http://t1.hxzdhn.com/uploads/tu/201805/9999/f80bf1e4eb.jpg'])
+        //file.adapter({a: "a"})
     })
 </script>
 </body>

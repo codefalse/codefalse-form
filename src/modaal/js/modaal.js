@@ -682,7 +682,9 @@
 				// define the source, check if content_source option exists, and use that or fall back to href.
 				var this_img_src;
 				var img_src_error = false;
-				if ( self.$elem.attr('data-modaal-content-source') ) {
+				if (self.scope.source){
+					this_img_src = self.scope.source;
+				} else if ( self.$elem.attr('data-modaal-content-source') ) {
 					this_img_src = self.$elem.attr('data-modaal-content-source');
 				} else if ( self.$elem.attr('href') ) {
 					this_img_src = self.$elem.attr('href');

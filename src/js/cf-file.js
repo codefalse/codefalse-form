@@ -7,24 +7,31 @@
     function _initComponent(id, options) {
         let cf =
             '<div id="'+id+'" class="codefalse-file">' +
-            '    <div class="codefalse-file-item codefalse-file-add" style="height: '+options.height+';width: '+options.width+';">' +
+            '    <div class="codefalse-file-item file-add" style="height: '+options.height+';width: '+options.width+';">' +
             '        <i class="codefalse-font icon-add" style="line-height: '+options.height+';"></i>' +
             '    </div>' +
             '</div>'
         return cf;
     }
 
-    function _createFileItem(options) {
+    function _createFileItem(options, codefalseId, src) {
         let item =
-            '<div class="codefalse-file-item" style="height: '+options.height+';width: '+options.width+';">' +
+            '<div class="codefalse-file-item file-item" style="height: '+options.height+';width: '+options.width+';">' +
             '   <div class="codefalse-file-operation" style="width: '+options.width+';">'+
             '      <i class="codefalse-file-del codefalse-font icon-delete"></i>' +
             '      <i class="codefalse-file-yulan codefalse-font icon-yulan"></i>' +
             '   </div>' +
-            '   <img src="" />' +
-            '   <input type="hidden" name="'+options.name+'"/>' +
+            '   <img src="'+src+'" />' +
+            '   <input type="hidden" name="'+options.name+'" value="'+src+'"/>' +
             '</div>';
-        return item;
+        let addDom = $('#'+codefalseId).find('.file-add');
+        addDom.before(item);
+
+        //绑定modaal
+        addDom.prev().find('.codefalse-file-yulan').modaal({
+            type: 'image',
+            content_source: src
+        });
     }
 
     $.fn.codefalseFile = function (options, callback) {
@@ -43,48 +50,13 @@
             let files = $(this)[0].files;
             for (let i = 0; i < files.length; i++){
                 let file = files[i];
-
-                let item = _createFileItem(fileOptions);
-                let addDom = $('#'+codefalseId).find('.codefalse-file-add');
-                addDom.before(item);
-
-                //绑定modaal
-                $('.codefalse-file-yulan').modaal({type: 'image'});
-
-                //监听文件块事件
-                let fileDom = addDom.prev();
-                //图片加载
-                let img = fileDom.find('img');
-                let yulan = fileDom.find('i.codefalse-file-yulan');
-                let fileInput = fileDom.find('input');
+                //读取文件
 
                 let fileReader = new FileReader();
                 fileReader.readAsDataURL(file);
                 fileReader.onload = (e) => {
-                    img.attr('src', e.target.result);
-                    yulan.attr('href', e.target.result);
-                    fileInput.val(e.target.result);
+                    _createFileItem(fileOptions, codefalseId, e.target.result);
                 };
-
-
-
-                fileDom.on('mouseenter', () => {
-                    let fileOperation = fileDom.find('.codefalse-file-operation');
-                    fileOperation.show();
-                });
-                fileDom.on('mouseleave', () => {
-                    let fileOperation = fileDom.find('.codefalse-file-operation');
-                    fileOperation.hide();
-                });
-                //图片删除
-                fileDom.find('.codefalse-file-del').on('click', function() {
-                    let img = fileDom.find('img');
-                    let src = img.src;
-                    if (typeof(callback) === 'function') {
-                        callback(src);
-                    }
-                    fileDom.remove();
-                });
             }
         });
 
@@ -96,12 +68,41 @@
                 //初始化文件选择组件
                 _this.after(_initComponent(codefalseId, fileOptions));
                 //监听添加事件
-                $('.codefalse-file-add>i').on('click', () => {
+                $('.file-add>i').on('click', () => {
                     _this.trigger('click');
+                });
+                //监听文件项事件
+                $('#'+codefalseId).on('mouseenter', '.file-item', function() {
+                    let fileOperation = $(this).find('.codefalse-file-operation');
+                    fileOperation.show();
+                });
+                $('#'+codefalseId).on('mouseleave', '.file-item', function() {
+                    let fileOperation = $(this).find('.codefalse-file-operation');
+                    fileOperation.hide();
+                });
+                //图片删除
+                $('#'+codefalseId).on('click', '.codefalse-file-del', function() {
+                    let fileDom = $(this).parent().parent();
+                    let img = fileDom.find('img');
+                    let src = img.attr('src');
+                    if (typeof(callback) === 'function') {
+                        callback(src);
+                    }
+                    fileDom.remove();
                 });
             },
             adapter: function (images) {
-                console.log(images)
+                if(typeof(images) === "object"){
+                    let len = images.length;
+                    if (len === undefined){
+                        console.error('adapter params error.');
+                        return;
+                    }
+                    for (let i = 0; i < images.length; i++){
+                        _createFileItem(fileOptions, codefalseId, images[i]);
+                    }
+                }
+
             }
         };
         methods._init();
