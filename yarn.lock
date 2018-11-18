@@ -742,7 +742,7 @@ concat-with-sourcemaps@^1.0.0:
   dependencies:
     source-map "^0.6.1"
 
-convert-source-map@1.X, convert-source-map@^1.5.1:
+convert-source-map@1.X, convert-source-map@^1.1.0, convert-source-map@^1.5.1:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/convert-source-map/-/convert-source-map-1.6.0.tgz#51b537a8c43e0f04dec1993bffcdd504e758ac20"
   integrity sha512-eFu7XigvxdZ1ETfbgPBohgyQ/Z++C0eEhTor0qRwBw9unw+L0/6V8wkSuGgzdThkiS5lSpdptOQPD8Ak40a+7A==
@@ -781,6 +781,11 @@ d@1:
   dependencies:
     es5-ext "^0.10.9"
 
+dargs@^5.0.1:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/dargs/-/dargs-5.1.0.tgz#ec7ea50c78564cd36c9d5ec18f66329fade27829"
+  integrity sha1-7H6lDHhWTNNsnV7Bj2Yyn63ieCk=
+
 dateformat@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-2.2.0.tgz#4065e2013cf9fb916ddfd82efb506ad4c6769062"
@@ -813,6 +818,11 @@ decode-uri-component@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.0.tgz#eb3913333458775cb84cd1a1fae062106bb87545"
   integrity sha1-6zkTMzRYd1y4TNGh+uBiEGu4dUU=
+
+deepcopy@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/deepcopy/-/deepcopy-0.5.0.tgz#d2ca34335c2d31f54c1b4f13745e001977d491a2"
+  integrity sha1-0so0M1wtMfVMG08TdF4AGXfUkaI=
 
 defaults@^1.0.0:
   version "1.0.3"
@@ -1235,6 +1245,21 @@ gulp-rename@^1.3.0:
   resolved "https://registry.yarnpkg.com/gulp-rename/-/gulp-rename-1.4.0.tgz#de1c718e7c4095ae861f7296ef4f3248648240bd"
   integrity sha512-swzbIGb/arEoFK89tPY58vg3Ok1bw+d35PfUNwWqdo7KM4jkmuGA78JiDNqR+JeZFaeeHnRg9N7aihX3YPmsyg==
 
+gulp-scss@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/gulp-scss/-/gulp-scss-1.4.0.tgz#d17cb418d1593815fc375e789acd9aea3ab84c0a"
+  integrity sha1-0Xy0GNFZOBX8N154ms2a6jq4TAo=
+  dependencies:
+    convert-source-map "^1.1.0"
+    dargs "^5.0.1"
+    extend "^3.0.0"
+    gulp-util "^3.0.4"
+    mkdirp "^0.5.1"
+    node-kissdi "^1.0.3"
+    q "^1.3.0"
+    through2 "^2.0.0"
+    vinyl-sourcemaps-apply "^0.2.1"
+
 gulp-sourcemaps@^2.6.4:
   version "2.6.4"
   resolved "https://registry.yarnpkg.com/gulp-sourcemaps/-/gulp-sourcemaps-2.6.4.tgz#cbb2008450b1bcce6cd23bf98337be751bf6e30a"
@@ -1276,7 +1301,7 @@ gulp-uglifycss@^1.0.9:
     uglifycss "^0.0.25"
     vinyl "^2.1.0"
 
-gulp-util@^3.0.0:
+gulp-util@^3.0.0, gulp-util@^3.0.4:
   version "3.0.8"
   resolved "https://registry.yarnpkg.com/gulp-util/-/gulp-util-3.0.8.tgz#0054e1e744502e27c04c187c3ecc505dd54bbb4f"
   integrity sha1-AFTh50RQLifATBh8PsxQXdVLu08=
@@ -1932,6 +1957,13 @@ next-tick@1:
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
   integrity sha1-yobR/ogoFpsBICCOPchCS524NCw=
 
+node-kissdi@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/node-kissdi/-/node-kissdi-1.0.3.tgz#dface4fd8b8d158500dc271c0974be940959a9b0"
+  integrity sha1-36zk/YuNFYUA3CccCXS+lAlZqbA=
+  dependencies:
+    deepcopy "^0.5.0"
+
 normalize-path@^2.0.1, normalize-path@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-2.1.1.tgz#1ab28b556e198363a8c1a6f7e6fa20137fe6aed9"
@@ -2114,6 +2146,11 @@ process-nextick-args@^2.0.0, process-nextick-args@~2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.0.tgz#a37d732f4271b4ab1ad070d35508e8290788ffaa"
   integrity sha512-MtEC1TqN0EU5nephaJ4rAtThHtC86dNN9qCuEhtshvpVBkAW5ZO7BASN9REnF9eoXGcRub+pFuKEpOHE+HbEMw==
+
+q@^1.3.0:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
+  integrity sha1-fjL3W0E4EpHQRhHxvxQQmsAGUdc=
 
 "readable-stream@>=1.0.33-1 <1.1.0-0":
   version "1.0.34"
@@ -2597,7 +2634,7 @@ vinyl-fs@^0.3.0:
     through2 "^0.6.1"
     vinyl "^0.4.0"
 
-vinyl-sourcemaps-apply@^0.2.0:
+vinyl-sourcemaps-apply@^0.2.0, vinyl-sourcemaps-apply@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/vinyl-sourcemaps-apply/-/vinyl-sourcemaps-apply-0.2.1.tgz#ab6549d61d172c2b1b87be5c508d239c8ef87705"
   integrity sha1-q2VJ1h0XLCsbh75cUI0jnI74dwU=

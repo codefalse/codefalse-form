@@ -3,19 +3,21 @@ let gulp = require('gulp'),
     clean = require('gulp-clean'),
     uglify = require('gulp-uglify'),
     uglifycss = require('gulp-uglifycss'),
+    scss = require('gulp-scss'),
     sourcemaps = require('gulp-sourcemaps'),
     rename = require('gulp-rename'),
     concat = require('gulp-concat');
 
+//清空生成代码
 gulp.task('clean', () => {
     gulp.src('./dist')
         .pipe(clean());
 });
-gulp.task('minjs', () => {
-    gulp.src('./src/js/*.js')
-        .pipe(babel())
+//转换es6->es5, scss->css,压缩js,css
+gulp.task('compress', () => {
+    gulp.src(['./src/js/*.js'], {base: 'src'}).pipe(babel())
+        .pipe(gulp.dest('./dist'))
         .pipe(sourcemaps.init())
-        .pipe(gulp.dest('./dist/js/'))
         .pipe(uglify({
             compress: {
                 drop_console: true
@@ -23,8 +25,9 @@ gulp.task('minjs', () => {
         }))
         .pipe(rename({extname: '.min.js'}))
         .pipe(sourcemaps.write())
-        .pipe(gulp.dest('./dist/js/'));
+        .pipe(gulp.dest('./dist'));
 });
+
 gulp.task('minCss', () => {
     gulp.src('./src/css/*.css')
         .pipe(uglifycss())
