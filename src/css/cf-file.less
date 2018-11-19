@@ -1,48 +1,43 @@
 .codefalse-file{
   height: auto;
   .codefalse-file-item{
-    &,img{
-      height: 100%;
-    }
-  }
-}
-
-.codefalse-file-item{
     display: inline-block;
     border: 1px solid gray;
     vertical-align: top;
     margin: 5px;
-}
-.codefalse-file-item>img{
-    width: 100%;
     height: 100%;
-}
-.codefalse-file-operation{
-    position: absolute;
-    height: 30px;
-    background-color: black;
-    text-align: right;
-    opacity: 0.5;
-    display: none;
-}
-.codefalse-file-operation>i{
-    cursor: pointer;
-    line-height: 30px;
-    font-size: 20px;
-    margin-right: 5px;
-    color: white;
-}
-.codefalse-file-operation>i:hover{
-    color: cornflowerblue;
-}
-.codefalse-file-add{
+    img{
+      height: 100%;
+      width: 100%;
+    }
+    .codefalse-file-operation{
+      position: absolute;
+      height: 30px;
+      background-color: black;
+      text-align: right;
+      opacity: 0.5;
+      display: none;
+      i{
+        cursor: pointer;
+        line-height: 30px;
+        font-size: 20px;
+        margin-right: 5px;
+        color: white;
+        &:hover{
+          color: cornflowerblue;
+        }
+      }
+    }
+  }
+  .file-add{
     text-align: center;
     color: gray;
-}
-.codefalse-file-add>i{
-    font-size: 36px;
-    cursor: pointer;
-}
-.codefalse-file-add>i:hover{
-    color: cornflowerblue;
+    i{
+      font-size: 36px;
+      cursor: pointer;
+      &:hover{
+        color: cornflowerblue;
+      }
+    }
+  }
 }

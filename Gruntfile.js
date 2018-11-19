@@ -2,6 +2,9 @@ module.exports = function (grunt) {
     require('load-grunt-tasks')(grunt);
     grunt.initConfig({
         clean: {
+            temp: {
+                src: './.temp'
+            },
             dist: {
                 src: ["./dist/js/*", "./dist/css/*"],
                 filter: 'isFile'
@@ -10,8 +13,15 @@ module.exports = function (grunt) {
         babel: {
             dist: {
                 files: {
-                    "./dist/js/cf-file.js": ["./static/modaal/js/modaal.js", "./src/js/cf-file.js"],
+                    "./.temp/js/cf-file.js": "./src/js/cf-file.js",
                     "./dist/js/cf-input.js": "./src/js/cf-input.js"
+                }
+            }
+        },
+        concat: {
+            dist: {
+                files: {
+                    "./dist/js/cf-file.js": ["./src/modaal/modaal.js", "./.temp/js/cf-file.js"]
                 }
             }
         },
@@ -49,7 +59,7 @@ module.exports = function (grunt) {
         watch: {
             scripts: {
                 files: ['./src/js/*.js'],
-                tasks: ['babel']
+                tasks: ['babel', 'concat', 'clean:temp']
             },
             lesss: {
                 files: ['./src/css/*.less'],
@@ -58,5 +68,5 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('default', ['clean', 'babel', 'uglify', 'less']);
+    grunt.registerTask('default', ['clean:dist', 'babel','concat', 'uglify', 'less', 'clean:temp']);
 };
