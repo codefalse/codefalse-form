@@ -41,7 +41,8 @@ module.exports = function (grunt) {
                 },
                 files: {
                     './dist/css/cf-file.min.css': './dist/css/cf-file.css',
-                    './dist/css/cf-input.min.css': './dist/css/cf-input.css'
+                    './dist/css/cf-input.min.css': './dist/css/cf-input.css',
+                    './dist/css/cf-form.min.css': ['./dist/css/cf-file.css', './dist/css/cf-input.css']
                 }
             }
         },
