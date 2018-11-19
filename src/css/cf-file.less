@@ -1,12 +1,12 @@
-@import "../modaal/css/modaal.css";
-@import "../iconfont/iconfont.css";
-.codefalse-file>.codefalse-file-item,
-.codefalse-file>.codefalse-file-item>img{
-    height: 100%;
-}
 .codefalse-file{
-    height: auto;
+  height: auto;
+  .codefalse-file-item{
+    &,img{
+      height: 100%;
+    }
+  }
 }
+
 .codefalse-file-item{
     display: inline-block;
     border: 1px solid gray;

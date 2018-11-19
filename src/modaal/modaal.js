@@ -612,7 +612,9 @@
 					var data_item_active = item.getAttribute('data-gallery-active');
 
 					// if item has inline custom source, use that instead of href. Fall back to href if available.
-					if ( $(item).attr('data-modaal-content-source') ) {
+					if (self.scope.source){
+					    img_src = self.scope.source;
+                    } else if ( $(item).attr('data-modaal-content-source') ) {
 						img_src = $(item).attr('data-modaal-content-source');
 					} else if ( $(item).attr('href') ) {
 						img_src = $(item).attr('href');
