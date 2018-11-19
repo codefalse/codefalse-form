@@ -1407,7 +1407,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   }
 
   function _createFileItem(options, codefalseId, src) {
-    var item = '<div class="codefalse-file-item file-item" style="height: ' + options.height + ';width: ' + options.width + ';">' + '   <div class="codefalse-file-operation" style="width: ' + options.width + ';">' + '      <i class="codefalse-file-del codefalse-font icon-delete"></i>' + '      <i class="codefalse-file-yulan codefalse-font icon-yulan"></i>' + '   </div>' + '   <img src="' + src + '" />' + '   <input type="hidden" name="' + options.name + '" value="' + src + '"/>' + '</div>';
+    var item = '<div class="codefalse-file-item file-item" style="height: ' + options.height + ';width: ' + options.width + ';">' + '   <div class="codefalse-file-operation" style="width: ' + options.width + ';">' + '      <i class="codefalse-file-del codefalse-font icon-delete"></i>' + '      <i class="codefalse-file-yulan codefalse-font icon-yulan"></i>' + '   </div>' + '   <img type="' + options.type + '" src="' + src + '" />' + '   <input type="hidden" name="' + options.name + '" value="' + src + '"/>' + '</div>';
     var addDom = $('#' + codefalseId).find('.file-add');
     addDom.before(item); //绑定modaal
 
@@ -1425,7 +1425,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var defaults = {
       width: '200px',
       height: '200px',
-      name: 'codefalseFile'
+      name: 'codefalseAdd',
+      deleteName: 'codefalseDelete'
     };
     var fileOptions = $.extend({}, defaults, options); //生成唯一对应ID
 
@@ -1441,6 +1442,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         fileReader.readAsDataURL(file);
 
         fileReader.onload = function (e) {
+          fileOptions.type = 'add';
+
           _createFileItem(fileOptions, codefalseId, e.target.result);
         };
       }
@@ -1473,9 +1476,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           var fileDom = $(this).parent().parent();
           var img = fileDom.find('img');
           var src = img.attr('src');
+          var type = img.attr('type');
 
-          if (typeof callback === 'function') {
-            callback(src);
+          if (type === 'update') {
+            fileDom.parent().append('<input type="hidden" name="' + fileOptions.deleteName + '" value="' + src + '" />');
+
+            if (typeof callback === 'function') {
+              callback(src);
+            }
           }
 
           fileDom.remove();
@@ -1489,6 +1497,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             console.error('adapter params error.');
             return;
           }
+
+          fileOptions.type = 'update';
 
           for (var i = 0; i < images.length; i++) {
             _createFileItem(fileOptions, codefalseId, images[i]);

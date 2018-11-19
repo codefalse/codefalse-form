@@ -21,7 +21,7 @@
             '      <i class="codefalse-file-del codefalse-font icon-delete"></i>' +
             '      <i class="codefalse-file-yulan codefalse-font icon-yulan"></i>' +
             '   </div>' +
-            '   <img src="'+src+'" />' +
+            '   <img type="'+options.type+'" src="'+src+'" />' +
             '   <input type="hidden" name="'+options.name+'" value="'+src+'"/>' +
             '</div>';
         let addDom = $('#'+codefalseId).find('.file-add');
@@ -40,9 +40,11 @@
         let defaults = {
             width: '200px',
             height: '200px',
-            name: 'codefalseFile'
+            name: 'codefalseAdd',
+            deleteName: 'codefalseDelete'
         };
         let fileOptions = $.extend({}, defaults, options);
+
         //生成唯一对应ID
         let codefalseId = 'codefalse-file-' + parseInt(Math.random() * 100000 + '');
 
@@ -55,6 +57,7 @@
                 let fileReader = new FileReader();
                 fileReader.readAsDataURL(file);
                 fileReader.onload = (e) => {
+                    fileOptions.type = 'add';
                     _createFileItem(fileOptions, codefalseId, e.target.result);
                 };
             }
@@ -85,9 +88,14 @@
                     let fileDom = $(this).parent().parent();
                     let img = fileDom.find('img');
                     let src = img.attr('src');
-                    if (typeof(callback) === 'function') {
-                        callback(src);
+                    let type = img.attr('type');
+                    if (type === 'update'){
+                        fileDom.parent().append('<input type="hidden" name="'+fileOptions.deleteName+'" value="'+src+'" />')
+                        if (typeof(callback) === 'function') {
+                            callback(src);
+                        }
                     }
+
                     fileDom.remove();
                 });
             },
@@ -98,6 +106,7 @@
                         console.error('adapter params error.');
                         return;
                     }
+                    fileOptions.type = 'update';
                     for (let i = 0; i < images.length; i++){
                         _createFileItem(fileOptions, codefalseId, images[i]);
                     }
