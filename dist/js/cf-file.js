@@ -1504,6 +1504,23 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             _createFileItem(fileOptions, codefalseId, images[i]);
           }
         }
+      },
+      clear: function clear() {
+        $('#' + codefalseId).find('.file-item').each(function () {
+          var img = $(this).find('img');
+          var src = img.attr('src');
+          var type = img.attr('type');
+
+          if (type === 'update') {
+            $(this).parent().append('<input type="hidden" name="' + fileOptions.deleteName + '" value="' + src + '" />');
+
+            if (typeof callback === 'function') {
+              callback(src);
+            }
+          }
+
+          $(this).remove();
+        });
       }
     };
 

@@ -53,7 +53,6 @@
             for (let i = 0; i < files.length; i++){
                 let file = files[i];
                 //读取文件
-
                 let fileReader = new FileReader();
                 fileReader.readAsDataURL(file);
                 fileReader.onload = (e) => {
@@ -90,7 +89,7 @@
                     let src = img.attr('src');
                     let type = img.attr('type');
                     if (type === 'update'){
-                        fileDom.parent().append('<input type="hidden" name="'+fileOptions.deleteName+'" value="'+src+'" />')
+                        fileDom.parent().append('<input type="hidden" name="'+fileOptions.deleteName+'" value="'+src+'" />');
                         if (typeof(callback) === 'function') {
                             callback(src);
                         }
@@ -111,7 +110,20 @@
                         _createFileItem(fileOptions, codefalseId, images[i]);
                     }
                 }
-
+            },
+            clear: function () {
+                $('#'+codefalseId).find('.file-item').each(function () {
+                    let img = $(this).find('img');
+                    let src = img.attr('src');
+                    let type = img.attr('type');
+                    if (type === 'update'){
+                        $(this).parent().append('<input type="hidden" name="'+fileOptions.deleteName+'" value="'+src+'" />');
+                        if (typeof(callback) === 'function') {
+                            callback(src);
+                        }
+                    }
+                    $(this).remove();
+                });
             }
         };
         methods._init();

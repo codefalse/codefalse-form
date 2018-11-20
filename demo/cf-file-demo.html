@@ -8,7 +8,7 @@
 </head>
 <body>
 <input type="file" id="fileDemo" />
-
+<input type="button" value="清空" id="clear" />
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
 <script src="../dist/js/cf-file.js"></script>
 <script>
@@ -18,6 +18,10 @@
         });
         file.adapter(['https://tse4.mm.bing.net/th?id=OIP.1t0PnlxjQ_HxY1qhXo5vmAHaLH&pid=Api'])
         //file.adapter({a: "a"})
+        $('#clear').on('click', function () {
+            console.log('---------')
+            file.clear();
+        })
     })
 </script>
 </body>
