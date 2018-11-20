@@ -38,6 +38,7 @@
         let _this = $(this);
 
         let defaults = {
+            show: true,
             width: '200px',
             height: '200px',
             name: 'codefalseAdd',
@@ -69,8 +70,11 @@
                 _this.attr("style", "display:none");
                 //初始化文件选择组件
                 _this.after(_initComponent(codefalseId, fileOptions));
+                if (!fileOptions.show){
+                    this.hide();
+                }
                 //监听添加事件
-                $('.file-add>i').on('click', () => {
+                $('#'+codefalseId).find('.file-add>i').on('click', () => {
                     _this.trigger('click');
                 });
                 //监听文件项事件
@@ -124,6 +128,13 @@
                     }
                     $(this).remove();
                 });
+            },
+            show: function () {
+                $('#'+codefalseId).show();
+            },
+            hide: function () {
+                this.clear();
+                $('#'+codefalseId).hide();
             }
         };
         methods._init();

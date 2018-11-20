@@ -1423,6 +1423,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var _this = $(this);
 
     var defaults = {
+      show: true,
       width: '200px',
       height: '200px',
       name: 'codefalseAdd',
@@ -1456,10 +1457,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         _this.attr("style", "display:none"); //初始化文件选择组件
 
 
-        _this.after(_initComponent(codefalseId, fileOptions)); //监听添加事件
+        _this.after(_initComponent(codefalseId, fileOptions));
+
+        if (!fileOptions.show) {
+          this.hide();
+        } //监听添加事件
 
 
-        $('.file-add>i').on('click', function () {
+        $('#' + codefalseId).find('.file-add>i').on('click', function () {
           _this.trigger('click');
         }); //监听文件项事件
 
@@ -1521,6 +1526,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
           $(this).remove();
         });
+      },
+      show: function show() {
+        $('#' + codefalseId).show();
+      },
+      hide: function hide() {
+        this.clear();
+        $('#' + codefalseId).hide();
       }
     };
 

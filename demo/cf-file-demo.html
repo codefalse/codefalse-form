@@ -8,12 +8,16 @@
 </head>
 <body>
 <input type="file" id="fileDemo" />
+<input type="button" value="show" id="show" />
+<input type="button" value="hide" id="hide" />
 <input type="button" value="清空" id="clear" />
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
 <script src="../dist/js/cf-file.js"></script>
 <script>
     $().ready(function () {
-        let file = $('#fileDemo').codefalseFile({}, function (res) {
+        let file = $('#fileDemo').codefalseFile({
+            show: false
+        }, function (res) {
             console.log(res)
         });
         file.adapter(['https://tse4.mm.bing.net/th?id=OIP.1t0PnlxjQ_HxY1qhXo5vmAHaLH&pid=Api'])
@@ -21,7 +25,13 @@
         $('#clear').on('click', function () {
             console.log('---------')
             file.clear();
+        });
+        $('#show').on('click', function () {
+            file.show();
         })
+        $('#hide').on('click', function () {
+            file.hide()
+        });
     })
 </script>
 </body>
