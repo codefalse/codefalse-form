@@ -1401,20 +1401,52 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
  * use jquery 3.3.1
  */
 (function ($) {
+  function _validateOptions(self, options) {
+    //过滤宽高
+    if (typeof options.width === 'number') {
+      options.width = options.width + 'px';
+    }
+
+    if (typeof options.height === 'number') {
+      options.height = options.height + 'px';
+    } //type => accept
+
+
+    var accept = self.attr('accept');
+
+    if (accept === undefined || accept === '') {
+      if (options.type === 'image') {
+        options.accept = 'image/*';
+      } else if (options.type === 'video') {
+        options.accept = 'video/*';
+      }
+
+      self.attr('accept', options.accept);
+    }
+  }
+
   function _initComponent(id, options) {
     var cf = '<div id="' + id + '" class="codefalse-file">' + '    <div class="codefalse-file-item file-add" style="height: ' + options.height + ';width: ' + options.width + ';">' + '        <i class="codefalse-font icon-add" style="line-height: ' + options.height + ';"></i>' + '    </div>' + '</div>';
     return cf;
   }
 
-  function _createFileItem(options, codefalseId, src) {
-    var item = '<div class="codefalse-file-item file-item" style="height: ' + options.height + ';width: ' + options.width + ';">' + '   <div class="codefalse-file-operation" style="width: ' + options.width + ';">' + '      <i class="codefalse-file-del codefalse-font icon-delete"></i>' + '      <i class="codefalse-file-yulan codefalse-font icon-yulan"></i>' + '   </div>' + '   <img type="' + options.type + '" src="' + src + '" />' + '   <input type="hidden" name="' + options.name + '" value="' + src + '"/>' + '</div>';
-    var addDom = $('#' + codefalseId).find('.file-add');
-    addDom.before(item); //绑定modaal
+  function _createFileItem(codefalseId, src, status, options) {
+    var typeItem = ''; //image
 
-    addDom.prev().find('.codefalse-file-yulan').modaal({
-      type: 'image',
-      content_source: src
-    });
+    if (options.type === 'image') {
+      typeItem = '<img status="' + status + '" src="' + src + '" />';
+    }
+
+    var item = '<div class="codefalse-file-item file-item" style="height: ' + options.height + ';width: ' + options.width + ';">' + '   <div class="codefalse-file-operation" style="width: ' + options.width + ';">' + '      <i class="codefalse-file-del codefalse-font icon-delete"></i>' + '      <i class="codefalse-file-yulan codefalse-font icon-yulan"></i>' + '   </div>' + typeItem + '   <input type="hidden" name="' + options.name + '" value="' + src + '"/>' + '</div>';
+    var addDom = $('#' + codefalseId).find('.file-add');
+    addDom.before(item); //绑定modaal => image
+
+    if (options.type === 'image') {
+      addDom.prev().find('.codefalse-file-yulan').modaal({
+        type: 'image',
+        content_source: src
+      });
+    }
   }
 
   $.fn.codefalseFile = function (options, callback) {
@@ -1424,20 +1456,18 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     var defaults = {
       show: true,
+      type: 'image',
+      accept: 'image/*',
+      format: 'base64',
+      max: 3,
       width: '200px',
       height: '200px',
-      name: 'codefalseAdd',
-      deleteName: 'codefalseDelete'
+      name: 'codefalseFile',
+      deleteName: ''
     };
     var fileOptions = $.extend({}, defaults, options);
 
-    if (typeof fileOptions.width === 'number') {
-      fileOptions.width = fileOptions.width + 'px';
-    }
-
-    if (typeof fileOptions.height === 'number') {
-      fileOptions.height = fileOptions.height + 'px';
-    } //生成唯一对应ID
+    _validateOptions(_this, fileOptions); //生成唯一对应ID
 
 
     var codefalseId = 'codefalse-file-' + parseInt(Math.random() * 100000 + '');
@@ -1447,15 +1477,16 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       for (var i = 0; i < files.length; i++) {
         var file = files[i]; //读取文件
+        //default base64
 
-        var fileReader = new FileReader();
-        fileReader.readAsDataURL(file);
+        if (fileOptions.format === 'base64') {
+          var fileReader = new FileReader();
+          fileReader.readAsDataURL(file);
 
-        fileReader.onload = function (e) {
-          fileOptions.type = 'add';
-
-          _createFileItem(fileOptions, codefalseId, e.target.result);
-        };
+          fileReader.onload = function (e) {
+            _createFileItem(codefalseId, e.target.result, 'add', fileOptions);
+          };
+        }
       }
     });
 
@@ -1474,6 +1505,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
         $('#' + codefalseId).find('.file-add>i').on('click', function () {
+          var fileSize = $('#' + codefalseId).find('.file-item').length;
+
+          if (fileSize >= fileOptions.max) {
+            console.error("文件数量已经达到配置最大值");
+            return;
+          }
+
           _this.trigger('click');
         }); //监听文件项事件
 
@@ -1490,10 +1528,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           var fileDom = $(this).parent().parent();
           var img = fileDom.find('img');
           var src = img.attr('src');
-          var type = img.attr('type');
+          var status = img.attr('status');
 
-          if (type === 'update') {
-            fileDom.parent().append('<input type="hidden" name="' + fileOptions.deleteName + '" value="' + src + '" />');
+          if (status === 'update') {
+            if (fileOptions.deleteName !== '') {
+              var deleteInput = '<input type="hidden" name="' + fileOptions.deleteName + '" value="' + src + '" />';
+              fileDom.parent().append(deleteInput);
+            }
 
             if (typeof callback === 'function') {
               callback(src);
@@ -1503,19 +1544,25 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           fileDom.remove();
         });
       },
-      adapter: function adapter(images) {
-        if (_typeof(images) === "object") {
-          var len = images.length;
+      adapter: function adapter(files, status) {
+        if (status === undefined || status === '') {
+          status = 'update';
+        }
+
+        if (typeof files === 'string') {
+          _createFileItem(codefalseId, files, status, fileOptions);
+        } else if (_typeof(files) === "object") {
+          var len = files.length;
 
           if (len === undefined) {
-            console.error('adapter params error.');
-            return;
+            throw 'parameters must be string|array';
+          } else if (len > fileOptions.max) {
+            len = fileOptions.max;
+            console.error('装载文件不能超过配置最大值');
           }
 
-          fileOptions.type = 'update';
-
-          for (var i = 0; i < images.length; i++) {
-            _createFileItem(fileOptions, codefalseId, images[i]);
+          for (var i = 0; i < len; i++) {
+            _createFileItem(codefalseId, files[i], status, fileOptions);
           }
         }
       },
@@ -1523,10 +1570,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         $('#' + codefalseId).find('.file-item').each(function () {
           var img = $(this).find('img');
           var src = img.attr('src');
-          var type = img.attr('type');
+          var status = img.attr('status');
 
-          if (type === 'update') {
-            $(this).parent().append('<input type="hidden" name="' + fileOptions.deleteName + '" value="' + src + '" />');
+          if (status === 'update') {
+            if (fileOptions.deleteName !== '') {
+              var deleteInput = '<input type="hidden" name="' + fileOptions.deleteName + '" value="' + src + '" />';
+              $(this).parent().append(deleteInput);
+            }
 
             if (typeof callback === 'function') {
               callback(src);

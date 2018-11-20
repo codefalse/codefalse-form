@@ -17,11 +17,13 @@
     $().ready(function () {
         let file = $('#fileDemo').codefalseFile({
             show: true,
-            width: 200
+            width: 200,
+            name: 'demo',
+            deleteName: 'deleteDemo'
         }, function (res) {
             console.log(res)
         });
-        file.adapter(['https://tse4.mm.bing.net/th?id=OIP.1t0PnlxjQ_HxY1qhXo5vmAHaLH&pid=Api'])
+        file.adapter(['https://tse4.mm.bing.net/th?id=OIP.1t0PnlxjQ_HxY1qhXo5vmAHaLH&pid=Api','https://tse4.mm.bing.net/th?id=OIP.1t0PnlxjQ_HxY1qhXo5vmAHaLH&pid=Api','https://tse4.mm.bing.net/th?id=OIP.1t0PnlxjQ_HxY1qhXo5vmAHaLH&pid=Api','https://tse4.mm.bing.net/th?id=OIP.1t0PnlxjQ_HxY1qhXo5vmAHaLH&pid=Api'])
         //file.adapter({a: "a"})
         $('#clear').on('click', function () {
             console.log('---------')
