@@ -45,6 +45,12 @@
             deleteName: 'codefalseDelete'
         };
         let fileOptions = $.extend({}, defaults, options);
+        if (typeof(fileOptions.width) === 'number') {
+            fileOptions.width = fileOptions.width + 'px';
+        }
+        if (typeof(fileOptions.height) === 'number') {
+            fileOptions.height = fileOptions.height + 'px';
+        }
 
         //生成唯一对应ID
         let codefalseId = 'codefalse-file-' + parseInt(Math.random() * 100000 + '');

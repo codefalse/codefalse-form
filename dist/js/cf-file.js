@@ -1429,7 +1429,16 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       name: 'codefalseAdd',
       deleteName: 'codefalseDelete'
     };
-    var fileOptions = $.extend({}, defaults, options); //生成唯一对应ID
+    var fileOptions = $.extend({}, defaults, options);
+
+    if (typeof fileOptions.width === 'number') {
+      fileOptions.width = fileOptions.width + 'px';
+    }
+
+    if (typeof fileOptions.height === 'number') {
+      fileOptions.height = fileOptions.height + 'px';
+    } //生成唯一对应ID
+
 
     var codefalseId = 'codefalse-file-' + parseInt(Math.random() * 100000 + '');
 
