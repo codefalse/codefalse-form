@@ -14,15 +14,23 @@
       position: absolute;
       height: 30px;
       background-color: black;
-      text-align: right;
       opacity: 0.5;
       display: none;
+      span{
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        color: white;
+        width: 50%;
+        line-height: 30px;
+      }
       i{
         cursor: pointer;
         line-height: 30px;
-        font-size: 20px;
+        font-size: 15px;
         margin-right: 5px;
         color: white;
+        float: right;
         &:hover{
           color: cornflowerblue;
         }
