@@ -26,45 +26,67 @@
 
     function initViews(source, type, status) {
         let viewItem = '';
-        switch (type) {
-            case 'image':
-                viewItem = '<img status="'+status+'" src="'+source+'" />';
-                break;
-            case 'video':
-                viewItem = '<img status="'+status+'" src="'+source+'" />';
-                break;
+        if (type === 'image' || type === 'video'){
+            viewItem = '<img status="'+status+'" src="'+source+'" />';
         }
         return viewItem;
     }
 
-    function createFileItem(codefalse, fileName, baseFile, status) {
-
+    function initItems(codefalse, fileName, base64File, base64Source, status) {
         let options = codefalse.options;
-
         let item =
             '<div class="codefalse-file-item file-item" style="height: '+options.height+';width: '+options.width+';">' +
             '   <div class="codefalse-file-operation" style="width: '+options.width+';">'+
             '      <span class="codefalse-file-name">'+fileName+'</span> ' +
-                initActions(options) +
+            initActions(options) +
             '   </div>' +
-                initViews(baseFile, options.type, status) +
-            '   <input type="hidden" name="'+options.name+'" value="'+baseFile+'"/>' +
+            initViews(base64File, options.type, status) +
+            '   <input type="hidden" name="'+options.name+'" value="'+base64Source+'"/>' +
             '</div>';
 
         let addDom = codefalse.$container.find('.file-add');
         addDom.before(item);
+    }
 
-        switch (options.type) {
-            case 'image':
-                let previewDom = addDom.prev().find('.codefalse-file-preview');
-                if (previewDom) {
-                    previewDom.modaal({
-                        type: 'image',
-                        content_source: baseFile
-                    });
-                }
-                break;
+    function initListener(codefalse, base64Source) {
+        let type = codefalse.options.type;
+        let lastItem = codefalse.$container.find('.file-item:last');
+        let previewDom = lastItem.find('.codefalse-file-preview');
+        if (previewDom) {
+            if (type === 'image' || type === 'video'){
+                previewDom.modaal({
+                    type: type,
+                    content_source: base64Source
+                });
+            }
         }
+
+    }
+
+    function createFileItem(codefalse, fileName, base64File, status) {
+        let type = codefalse.options.type;
+        if (type === 'image') {
+            initItems(codefalse, fileName, base64File, base64File, status);
+            initListener(codefalse, base64File);
+        } else if (type === 'video'){
+            let video = document.createElement('video');
+            video.onloadeddata = function () {
+                let canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+                let base64Cover = canvas.toDataURL("image/png");
+                video = null;
+                canvas = null;
+                initItems(codefalse, fileName, base64Cover, base64File, status);
+                initListener(codefalse, base64File);
+            };
+            video.src = base64File;
+        }
+
+
+
+
     }
 
     $.fn.codefalseFile = function (options) {
@@ -116,11 +138,12 @@
                         //读取文件内容
                         let fileReader = new FileReader();
                         fileReader.onload = function (e) {
-                            let baseImage = e.target.result;
-                            createFileItem(codefalse, file.name, baseImage, 'add');
+                            let base64File = e.target.result;
+                            createFileItem(codefalse, file.name, base64File, 'add');
                         };
                         fileReader.readAsDataURL(file);
                     }
+                    $(this).val("");
                 });
 
                 console.log('init codefalse-file...');

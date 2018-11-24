@@ -878,7 +878,7 @@
 			var content;
 
 			// video markup
-			content = '<iframe src="' + url + '" class="modaal-video-frame" frameborder="0" allowfullscreen></iframe>';
+			content = '<video height="100%" controls src="' + url + '"></video>';
 
 			// now push content into markup
 			self.build_modal('<div class="modaal-video-container">' + content + '</div>');
