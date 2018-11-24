@@ -15,10 +15,10 @@
         return cf;
     }
 
-    function initActions(fileOptions) {
+    function initActions(options) {
         let actionItem = '<i class="codefalse-file-delete codefalse-font icon-delete"></i>';
-        for (let i in fileOptions.actions){
-            let action = fileOptions.actions[i];
+        for (let i in options.actions){
+            let action = options.actions[i];
             actionItem += '<i class="codefalse-file-'+action+' codefalse-font icon-'+action+'"></i>';
         }
         return actionItem;
@@ -28,24 +28,18 @@
         let viewItem = '';
         switch (type) {
             case 'image':
-                viewItem = '<img status="'+status+'" src="'+src+'" />';
+                viewItem = '<img status="'+status+'" src="'+source+'" />';
                 break;
             case 'video':
-                viewItem = '<img status="'+status+'" src="'+src+'" />';
+                viewItem = '<img status="'+status+'" src="'+source+'" />';
                 break;
         }
         return viewItem;
     }
 
-    function createFileItem(codefalseId, file, status, fileOptions) {
-        let typeItem = '';
+    function createFileItem(codefalse, fileName, baseFile, status) {
 
-        //image
-        if (options.type === 'image') {
-            typeItem = '<img status="'+status+'" src="'+src+'" />';
-        } else if (options.type === 'video'){
-            typeItem = '<img status="'+status+'" src="'+src+'" />';
-        }
+        let options = codefalse.options;
 
         let item =
             '<div class="codefalse-file-item file-item" style="height: '+options.height+';width: '+options.width+';">' +
@@ -53,23 +47,27 @@
             '      <span class="codefalse-file-name">'+fileName+'</span> ' +
                 initActions(options) +
             '   </div>' +
-                typeItem +
-            '   <input type="hidden" name="'+options.name+'" value="'+src+'"/>' +
+                initViews(baseFile, options.type, status) +
+            '   <input type="hidden" name="'+options.name+'" value="'+baseFile+'"/>' +
             '</div>';
-        let addDom = $('#'+codefalseId).find('.file-add');
+
+        let addDom = codefalse.$container.find('.file-add');
         addDom.before(item);
 
-        //绑定modaal => image
-        if (options.type === 'image'){
-            addDom.prev().find('.codefalse-file-yulan').modaal({
-                type: 'image',
-                content_source: src
-            });
+        switch (options.type) {
+            case 'image':
+                let previewDom = addDom.prev().find('.codefalse-file-preview');
+                if (previewDom) {
+                    previewDom.modaal({
+                        type: 'image',
+                        content_source: baseFile
+                    });
+                }
+                break;
         }
-
     }
 
-    $.fn.codefalseFile = function (options, callback) {
+    $.fn.codefalseFile = function (options) {
         let codefalse = {};
         codefalse.$elem = $(this);
         //生成唯一对应ID
@@ -92,7 +90,6 @@
             show: true,
             type: 'image',
             accept: '',
-            format: 'base64',
             maxFiles: 3,
             width: '150px',
             height: '150px',
@@ -103,40 +100,26 @@
         };
         codefalse.options = $.extend({}, defaults, options);
 
-        
         let fileArray = [];
-        // _this.on('change', () => {
-        //     let files = $(this)[0].files;
-        //     for (let i = 0; i < files.length; i++){
-        //         let file = files[i];
-        //         fileArray.push(file);
-        //         //读取文件
-        //         //default base64
-        //         if (fileOptions.format === 'base64'){
-        //             let fileReader = new FileReader();
-        //             fileReader.readAsDataURL(file);
-        //             fileReader.onload = (e) => {
-        //                 _createFileItem(codefalseId, file.name, e.target.result, 'add', fileOptions);
-        //             };
-        //         }else if (fileOptions.format === 'blob'){
-        //             if (fileOptions.type === 'image'){
-        //
-        //             } else if (fileOptions.type === 'video'){
-        //                 _createFileItem(codefalseId, file.name, '', 'add', fileOptions);
-        //             }
-        //         }
-        //     }
-        //     $(this).val("");
-        // });
-
         let methods = {
             _init: function () {
                 codefalse.$elem.hide();
+                //监听文件变化
                 codefalse.$elem.on('change', function () {
                     let files = this.files;
                     for (let i in files){
                         if (!files.hasOwnProperty(i)) continue;
-                        console.log(files[i])
+                        let file = files[i];
+                        //统计全部文件
+                        fileArray.push(file);
+
+                        //读取文件内容
+                        let fileReader = new FileReader();
+                        fileReader.onload = function (e) {
+                            let baseImage = e.target.result;
+                            createFileItem(codefalse, file.name, baseImage, 'add');
+                        };
+                        fileReader.readAsDataURL(file);
                     }
                 });
 
@@ -161,23 +144,27 @@
                     let fileOperation = $(this).find('.codefalse-file-operation');
                     fileOperation.hide();
                 });
-                //图片删除
+                //文件删除
                 codefalse.$container.on('click', '.codefalse-file-delete', function() {
-                    let fileDom = $(this).parent().parent();
-                    let img = fileDom.find('img');
-                    let src = img.attr('src');
-                    let status = img.attr('status');
+                    let fileItem = $(this).parent().parent();
+                    let index = codefalse.$container.find('.file-item').index(fileItem);
+                    let deleteFileArray = fileArray.splice(index, 1);
+
+                    let source, status;
+                    if (codefalse.options.type === 'image'){
+                        let img = fileItem.find('img');
+                        source = img.attr('src');
+                        status = img.attr('status');
+                    }
+
                     if (status === 'update'){
                         if (codefalse.options.deleteName !== ''){
-                            let deleteInput = '<input type="hidden" name="'+codefalse.options.deleteName+'" value="'+src+'" />';
-                            fileDom.parent().append(deleteInput);
-                        }
-                        if (typeof(callback) === 'function') {
-                            callback(src);
+                            let deleteInput = '<input type="hidden" name="'+codefalse.options.deleteName+'" value="'+source+'" />';
+                            codefalse.$container.append(deleteInput);
                         }
                     }
 
-                    fileDom.remove();
+                    fileItem.remove();
                 });
                 //文件上传
                 codefalse.$container.on('click', '.codefalse-file-upload', function () {
@@ -191,23 +178,23 @@
                     status = 'update';
                 }
                 if (typeof(files) === 'string'){
-                    _createFileItem(codefalseId, '', files, status, fileOptions);
+                    createFileItem(codefalse, '', files, status);
                 } else if(typeof(files) === "object"){
                     let len = files.length;
                     if (len === undefined){
                         throw ('parameters must be string|array');
-                    }else if (len > fileOptions.max) {
-                        len = fileOptions.max;
+                    }else if (len > codefalse.options.max) {
+                        len = codefalse.options.max;
                         console.error('装载文件不能超过配置最大值');
                     }
                     for (let i = 0; i < len; i++){
-                        _createFileItem(codefalseId, '', files[i], status, fileOptions);
+                        createFileItem(codefalse, '', files[i], status);
                     }
                 }
             },
             size: function () {
                 let size = 0;
-                $('#'+codefalseId).find('.file-item').each(function () {
+                codefalse.$container.find('.file-item').each(function () {
                     let val = $(this).find('input').val();
                     if (val){
                         size++;
@@ -216,28 +203,29 @@
                 return size;
             },
             clear: function () {
-                $('#'+codefalseId).find('.file-item').each(function () {
-                    let img = $(this).find('img');
-                    let src = img.attr('src');
-                    let status = img.attr('status');
+                codefalse.$container.find('.file-item').each(function () {
+                    let source, status;
+                    if (codefalse.options.type === 'image'){
+                        let img = $(this).find('img');
+                        source = img.attr('src');
+                        status = img.attr('status');
+                    }
+
                     if (status === 'update'){
-                        if (fileOptions.deleteName !== ''){
-                            let deleteInput = '<input type="hidden" name="'+fileOptions.deleteName+'" value="'+src+'" />';
-                            $(this).parent().append(deleteInput);
-                        }
-                        if (typeof(callback) === 'function') {
-                            callback(src);
+                        if (codefalse.options.deleteName !== ''){
+                            let deleteInput = '<input type="hidden" name="'+codefalse.options.deleteName+'" value="'+source+'" />';
+                            codefalse.$container.append(deleteInput);
                         }
                     }
                     $(this).remove();
                 });
             },
             show: function () {
-                $('#'+codefalseId).show();
+                codefalse.$container.show();
             },
             hide: function () {
                 this.clear();
-                $('#'+codefalseId).hide();
+                codefalse.$container.hide();
             }
         };
         methods._init();
