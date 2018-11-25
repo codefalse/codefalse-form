@@ -6,9 +6,14 @@
     vertical-align: top;
     margin: 5px;
     height: 100%;
-    img{
+    &>img, &>i{
       height: 100%;
       width: 100%;
+    }
+    &>i{
+      display: inline-block;
+      text-align: center;
+      font-size: 50px;
     }
     .codefalse-file-operation{
       position: absolute;
@@ -47,5 +52,8 @@
         color: cornflowerblue;
       }
     }
+  }
+  .codefalse-errors{
+    color: red;
   }
 }
