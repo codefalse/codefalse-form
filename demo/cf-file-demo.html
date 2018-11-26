@@ -16,22 +16,22 @@
 <script>
     $().ready(function () {
         let file = $('#fileDemo').codefalseFile({
-            show: true,
+            type: 'video',
+            accept: 'video/*',
             name: 'demo',
             deleteName: 'deleteDemo',
             actions: ['preview', 'upload'],
-            upload: function (file) {
-                console.log(file);
-                return 'aaa';
+            upload: function (fileItems, files) {
+                console.log(fileItems)
             }
         });
-        file.adapter([
-            'http://img.tupianzj.com/uploads/allimg/151115/9-151115130320.jpg',
-            'http://pic1a.nipic.com/2009-02-13/200921385412757_2.jpg',
-            'http://img.tupianzj.com/uploads/allimg/151115/9-151115130320.jpg',
-            'http://img.tupianzj.com/uploads/allimg/151115/9-151115130320.jpg',
-            'http://img.tupianzj.com/uploads/allimg/151115/9-151115130320.jpg'
-        ])
+        // file.adapter([
+        //     'http://img.tupianzj.com/uploads/allimg/151115/9-151115130320.jpg',
+        //     'http://pic1a.nipic.com/2009-02-13/200921385412757_2.jpg',
+        //     'http://img.tupianzj.com/uploads/allimg/151115/9-151115130320.jpg',
+        //     'http://img.tupianzj.com/uploads/allimg/151115/9-151115130320.jpg',
+        //     'http://img.tupianzj.com/uploads/allimg/151115/9-151115130320.jpg'
+        // ])
         $('#clear').on('click', function () {
             console.log('---------')
             file.clear();

@@ -109,13 +109,15 @@
          *
          *  show: 是否显示，默认为true
          *  type: 选择文件类型，默认为image
-         *  accept: 选择问价类型，默认image/*
-         *  format: 文件格式，默认base64,(base64, Blob)
-         *  max: 最大上传文件数量：默认3
+         *  accept: 选择问价类型，默认*
+         *  maxFiles: 最大上传文件数量：默认3
          *  width: 组件宽度
          *  height: 组件高度
          *  name: 新增文件输入框名称<input name="name" />
          *  deleteName: 删除文件输入框名称<input name="deleteName" />
+         *  actions: array,操作有preview, upload
+         *  useCapture:是否截取视频文件一帧图片，只对type:video有用
+         *  upload: function(fileItem, files),点击upload时回调
          */
         let defaults = {
             show: true,
@@ -126,17 +128,19 @@
             height: '150px',
             name: 'codefalseFile',
             deleteName: '',
-            actions: ['preview'],
+            actions: [],
             useCapture: false,
             upload: function () {}
         };
         codefalse.options = $.extend({}, defaults, options);
 
         let fileArray = [];
-        let uploadArray = [];
         let methods = {
             _init: function () {
                 codefalse.$elem.hide();
+                if (codefalse.options.accept) {
+                    codefalse.$elem.attr('accept', codefalse.options.accept);
+                }
                 //监听文件变化
                 codefalse.$elem.on('change', function () {
                     let files = this.files;
@@ -161,6 +165,11 @@
                 codefalse.$elem.after(initComponent(codefalse));
                 codefalse.$container = $('#'+codefalse.id);
                 codefalse.$error = codefalse.$container.find('.codefalse-errors');
+
+                if (!codefalse.options.show) {
+                    codefalse.$container.hide();
+                }
+
                 //监听添加事件
                 codefalse.$container.find('.file-add>i').on('click', () => {
                     let fileSize = $('#'+codefalseId).find('.file-item').length;
@@ -193,37 +202,34 @@
                 });
             },
             upload: function (index) {
+                let fileItems = [];
+                let files = [];
                 if (index != undefined){
                     let fileItem = codefalse.$container.find('.file-item').eq(index);
-                    let isRes = uploadArray[index];
-                    if (!isRes) {
-                        let res = codefalse.options.upload(fileArray[index], index);
-                        if (res) {
-                            fileItem.find('input').val(res);
-                            uploadArray[index] = res;
-                        }
+                    let source = fileItem.find('input').val();
+                    let a = source.split(',')[0];
+                    let b1 = a.split(';')[1];
+                    if (b1 !== undefined && b1 === 'base64') {
+                        fileItems.push(fileItem);
+                        files.push(fileArray[index]);
+                        codefalse.options.upload(fileItems, files);
+                    } else {
+                        methods.error('此处没有要上传的文件');
                     }
                 }else{
-                    let files = [];
-                    codefalse.$container.find('.file-item').each(function (index) {
-                        let isRes = uploadArray[index];
-                        if (!isRes) {
-                            files[index] = fileArray[index];
-                        }
-                    });
-                    let resArray = codefalse.options.upload(files);
-                    if (resArray) {
-                        for (let i in resArray) {
-                            if (!resArray.hasOwnProperty(i)) continue;
-                            let res = resArray[i];
-                            if (res) {
-                                let fileItem = codefalse.$container.find('.file-item').eq(i);
-                                fileItem.find('input').val(res);
-                                uploadArray[i] = res;
-                            }
-                        }
-                    }
+                    methods.error("暂时不支持多文件上传");
+                    // codefalse.$container.find('.file-item').each(function (index) {
+                    //     // let isRes = uploadArray[index];
+                    //     // if (!isRes) {
+                    //     //     fileItems.push($(this));
+                    //     //     files.push(fileArray[index]);
+                    //     // }
+                    // });
+                    // codefalse.options.upload(fileItems, files);
                 }
+            },
+            error: function (err) {
+                codefalse.$error.text(err);
             },
             adapter: function (files, status) {
                 if (status === undefined) {
@@ -231,9 +237,6 @@
                 }
                 if (typeof(files) === 'string'){
                     fileArray.push(files);
-                    if (status === 'update') {
-                        uploadArray[fileArray.length - 1] = files;
-                    }
                     createFileItem(codefalse, '', files, status);
                 } else if(typeof(files) === "object"){
                     let len = files.length;
@@ -245,9 +248,6 @@
                     }
                     for (let i = 0; i < files.length; i++){
                         fileArray.push(files[i]);
-                        if (status === 'update') {
-                            uploadArray[fileArray.length - 1] = files[i];
-                        }
                         createFileItem(codefalse, '', files[i], status);
                     }
                 }
@@ -261,7 +261,6 @@
                     let status = fileItem.attr('status');
                     let source = fileArray[index];
                     fileArray.splice(index, 1);
-                    uploadArray.splice(index, 1);
                     if (status === 'update' && codefalse.options.deleteName !== ''){
                         let deleteInput = '<input type="hidden" name="'+codefalse.options.deleteName+'" value="'+source+'" />';
                         codefalse.$container.append(deleteInput);
@@ -280,7 +279,6 @@
                         $(this).remove();
                     });
                     fileArray = [];
-                    uploadArray = [];
                 }
             },
             show: function () {

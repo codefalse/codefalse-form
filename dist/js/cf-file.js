@@ -1497,13 +1497,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
      *
      *  show: 是否显示，默认为true
      *  type: 选择文件类型，默认为image
-     *  accept: 选择问价类型，默认image/*
-     *  format: 文件格式，默认base64,(base64, Blob)
-     *  max: 最大上传文件数量：默认3
+     *  accept: 选择问价类型，默认*
+     *  maxFiles: 最大上传文件数量：默认3
      *  width: 组件宽度
      *  height: 组件高度
      *  name: 新增文件输入框名称<input name="name" />
      *  deleteName: 删除文件输入框名称<input name="deleteName" />
+     *  actions: array,操作有preview, upload
+     *  useCapture:是否截取视频文件一帧图片，只对type:video有用
+     *  upload: function(fileItem, files),点击upload时回调
      */
 
     var defaults = {
@@ -1515,16 +1517,20 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       height: '150px',
       name: 'codefalseFile',
       deleteName: '',
-      actions: ['preview'],
+      actions: [],
       useCapture: false,
       upload: function upload() {}
     };
     codefalse.options = $.extend({}, defaults, options);
     var fileArray = [];
-    var uploadArray = [];
     var methods = {
       _init: function _init() {
-        codefalse.$elem.hide(); //监听文件变化
+        codefalse.$elem.hide();
+
+        if (codefalse.options.accept) {
+          codefalse.$elem.attr('accept', codefalse.options.accept);
+        } //监听文件变化
+
 
         codefalse.$elem.on('change', function () {
           var files = this.files;
@@ -1556,7 +1562,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         console.log('init codefalse-file...');
         codefalse.$elem.after(initComponent(codefalse));
         codefalse.$container = $('#' + codefalse.id);
-        codefalse.$error = codefalse.$container.find('.codefalse-errors'); //监听添加事件
+        codefalse.$error = codefalse.$container.find('.codefalse-errors');
+
+        if (!codefalse.options.show) {
+          codefalse.$container.hide();
+        } //监听添加事件
+
 
         codefalse.$container.find('.file-add>i').on('click', function () {
           var fileSize = $('#' + codefalseId).find('.file-item').length;
@@ -1591,44 +1602,35 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         });
       },
       upload: function upload(index) {
+        var fileItems = [];
+        var files = [];
+
         if (index != undefined) {
           var fileItem = codefalse.$container.find('.file-item').eq(index);
-          var isRes = uploadArray[index];
+          var source = fileItem.find('input').val();
+          var a = source.split(',')[0];
+          var b1 = a.split(';')[1];
 
-          if (!isRes) {
-            var res = codefalse.options.upload(fileArray[index], index);
-
-            if (res) {
-              fileItem.find('input').val(res);
-              uploadArray[index] = res;
-            }
+          if (b1 !== undefined && b1 === 'base64') {
+            fileItems.push(fileItem);
+            files.push(fileArray[index]);
+            codefalse.options.upload(fileItems, files);
+          } else {
+            methods.error('此处没有要上传的文件');
           }
         } else {
-          var files = [];
-          codefalse.$container.find('.file-item').each(function (index) {
-            var isRes = uploadArray[index];
-
-            if (!isRes) {
-              files[index] = fileArray[index];
-            }
-          });
-          var resArray = codefalse.options.upload(files);
-
-          if (resArray) {
-            for (var i in resArray) {
-              if (!resArray.hasOwnProperty(i)) continue;
-              var _res = resArray[i];
-
-              if (_res) {
-                var _fileItem = codefalse.$container.find('.file-item').eq(i);
-
-                _fileItem.find('input').val(_res);
-
-                uploadArray[i] = _res;
-              }
-            }
-          }
+          methods.error("暂时不支持多文件上传"); // codefalse.$container.find('.file-item').each(function (index) {
+          //     // let isRes = uploadArray[index];
+          //     // if (!isRes) {
+          //     //     fileItems.push($(this));
+          //     //     files.push(fileArray[index]);
+          //     // }
+          // });
+          // codefalse.options.upload(fileItems, files);
         }
+      },
+      error: function error(err) {
+        codefalse.$error.text(err);
       },
       adapter: function adapter(files, status) {
         if (status === undefined) {
@@ -1637,11 +1639,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
         if (typeof files === 'string') {
           fileArray.push(files);
-
-          if (status === 'update') {
-            uploadArray[fileArray.length - 1] = files;
-          }
-
           createFileItem(codefalse, '', files, status);
         } else if (_typeof(files) === "object") {
           var len = files.length;
@@ -1655,11 +1652,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
           for (var i = 0; i < files.length; i++) {
             fileArray.push(files[i]);
-
-            if (status === 'update') {
-              uploadArray[fileArray.length - 1] = files[i];
-            }
-
             createFileItem(codefalse, '', files[i], status);
           }
         }
@@ -1673,7 +1665,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           var status = fileItem.attr('status');
           var source = fileArray[index];
           fileArray.splice(index, 1);
-          uploadArray.splice(index, 1);
 
           if (status === 'update' && codefalse.options.deleteName !== '') {
             var deleteInput = '<input type="hidden" name="' + codefalse.options.deleteName + '" value="' + source + '" />';
@@ -1695,7 +1686,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             $(this).remove();
           });
           fileArray = [];
-          uploadArray = [];
         }
       },
       show: function show() {
