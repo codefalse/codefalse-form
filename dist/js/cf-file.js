@@ -878,7 +878,7 @@
 			var content;
 
 			// video markup
-			content = '<video height="100%" controls src="' + url + '"></video>';
+			content = '<video style="width:100%;height: auto;" controls name="media"><source src="'+url+'"></video>';
 
 			// now push content into markup
 			self.build_modal('<div class="modaal-video-container">' + content + '</div>');
@@ -1439,29 +1439,27 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var item = '<div class="codefalse-file-item file-item" status="' + status + '" style="height: ' + options.height + ';width: ' + options.width + ';">' + '   <div class="codefalse-file-operation" style="width: ' + options.width + ';">' + '      <span class="codefalse-file-name">' + fileName + '</span> ' + initActions(options) + '   </div>' + initViews(base64File, options) + '   <input type="hidden" name="' + options.name + '" value="' + base64Source + '"/>' + '</div>';
     var addDom = codefalse.$container.find('.file-add');
     addDom.before(item);
-  }
+  } // function initListener(codefalse, base64Source) {
+  //     let type = codefalse.options.type;
+  //     let lastItem = codefalse.$container.find('.file-item:last');
+  //     let previewDom = lastItem.find('.codefalse-file-preview');
+  //     if (previewDom) {
+  //         if (type === 'image' || type === 'video'){
+  //             previewDom.modaal({
+  //                 type: type,
+  //                 content_source: base64Source
+  //             });
+  //         }
+  //     }
+  //
+  // }
 
-  function initListener(codefalse, base64Source) {
-    var type = codefalse.options.type;
-    var lastItem = codefalse.$container.find('.file-item:last');
-    var previewDom = lastItem.find('.codefalse-file-preview');
-
-    if (previewDom) {
-      if (type === 'image' || type === 'video') {
-        previewDom.modaal({
-          type: type,
-          content_source: base64Source
-        });
-      }
-    }
-  }
 
   function createFileItem(codefalse, fileName, base64File, status) {
     var type = codefalse.options.type;
 
     if (type === 'image') {
-      initItems(codefalse, fileName, base64File, base64File, status);
-      initListener(codefalse, base64File);
+      initItems(codefalse, fileName, base64File, base64File, status); //initListener(codefalse, base64File);
     } else if (type === 'video') {
       if (codefalse.options.useCapture) {
         var video = document.createElement('video');
@@ -1474,14 +1472,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           var base64Cover = canvas.toDataURL("image/png");
           video = null;
           canvas = null;
-          initItems(codefalse, fileName, base64Cover, base64File, status);
-          initListener(codefalse, base64File);
+          initItems(codefalse, fileName, base64Cover, base64File, status); //initListener(codefalse, base64File);
         };
 
         video.src = base64File;
       } else {
-        initItems(codefalse, fileName, '', base64File, status);
-        initListener(codefalse, base64File);
+        initItems(codefalse, fileName, '', base64File, status); //initListener(codefalse, base64File);
       }
     }
   }
@@ -1498,6 +1494,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
      *  show: 是否显示，默认为true
      *  type: 选择文件类型，默认为image
      *  accept: 选择问价类型，默认*
+     *  isReader: 是否读取文件，默认读取
+     *  maxSize: 选择文件限制，默认100M
      *  maxFiles: 最大上传文件数量：默认3
      *  width: 组件宽度
      *  height: 组件高度
@@ -1512,6 +1510,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       show: true,
       type: 'image',
       accept: '',
+      isReader: true,
+      maxSize: 100,
       maxFiles: 3,
       width: '150px',
       height: '150px',
@@ -1520,7 +1520,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       actions: [],
       useCapture: false,
       upload: function upload() {},
-      setting: function setting() {}
+      preview: function preview() {
+        return true;
+      }
     };
     codefalse.options = $.extend({}, defaults, options);
     var fileArray = [];
@@ -1538,24 +1540,45 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
           var _loop = function _loop(i) {
             if (!files.hasOwnProperty(i)) return "continue";
-            var file = files[i]; //统计全部文件
+            var file = files[i];
+            var size = file.size;
+            var maxSize = (codefalse.options.maxSize * 1024 * 1024).toFixed(2);
 
-            fileArray.push(file); //读取文件内容
+            if (size > maxSize) {
+              methods.error("选择文件超出可接受范围");
+              return {
+                v: void 0
+              };
+            } //统计全部文件
 
-            var fileReader = new FileReader();
 
-            fileReader.onload = function (e) {
-              var base64File = e.target.result;
-              createFileItem(codefalse, file.name, base64File, 'add');
-            };
+            fileArray.push(file);
 
-            fileReader.readAsDataURL(file);
+            if (codefalse.options.isReader) {
+              //读取文件内容
+              var fileReader = new FileReader();
+
+              fileReader.onload = function (e) {
+                var base64File = e.target.result;
+                createFileItem(codefalse, file.name, base64File, 'add');
+              };
+
+              fileReader.readAsDataURL(file);
+            } else {
+              createFileItem(codefalse, file.name, '', 'add');
+            }
           };
 
           for (var i in files) {
             var _ret = _loop(i);
 
-            if (_ret === "continue") continue;
+            switch (_ret) {
+              case "continue":
+                continue;
+
+              default:
+                if (_typeof(_ret) === "object") return _ret.v;
+            }
           }
 
           $(this).val("");
@@ -1600,10 +1623,38 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           var fileItem = $(this).parent().parent();
           var index = codefalse.$container.find('.file-item').index(fileItem);
           methods.upload(index);
-        }); //自定义操作
+        }); //文件预览
 
-        codefalse.$container.on('click', '.codefalse-file-setting', function () {
-          codefalse.options.setting($(this).parent().parent());
+        codefalse.$container.on('click', '.codefalse-file-preview', function () {
+          var fileItem = $(this).parent().parent();
+          var status = fileItem.attr('status');
+          var isPreview = codefalse.options.preview(fileItem);
+
+          if (status === 'add') {
+            if (isPreview && codefalse.options.isReader) {
+              var source = fileItem.find('input').val();
+
+              if (codefalse.options.type === 'image' || codefalse.options.type === 'video') {
+                $(this).modaal({
+                  type: codefalse.options.type,
+                  content_source: source,
+                  start_open: true
+                });
+              }
+            }
+          } else if (status === 'update') {
+            if (isPreview) {
+              var _source = fileItem.find('input').val();
+
+              if (codefalse.options.type === 'image' || codefalse.options.type === 'video') {
+                $(this).modaal({
+                  type: codefalse.options.type,
+                  content_source: _source,
+                  start_open: true
+                });
+              }
+            }
+          }
         });
       },
       upload: function upload(index) {
@@ -1699,6 +1750,19 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       hide: function hide() {
         this.clear();
         codefalse.$container.hide();
+      },
+      getSource: function getSource(fileItem) {
+        return fileItem.find('input').val();
+      },
+      setSource: function setSource(fileItem, source) {
+        fileItem.find('input').val(source);
+        methods.changeStatus(fileItem, 'update');
+      },
+      getPreview: function getPreview(fileItem) {
+        return fileItem.find('.codefalse-file-operation>.codefalse-file-preview');
+      },
+      changeStatus: function changeStatus(fileItem, status) {
+        fileItem.attr('status', status);
       }
     };
 

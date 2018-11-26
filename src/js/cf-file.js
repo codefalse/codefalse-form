@@ -56,26 +56,26 @@
         addDom.before(item);
     }
 
-    function initListener(codefalse, base64Source) {
-        let type = codefalse.options.type;
-        let lastItem = codefalse.$container.find('.file-item:last');
-        let previewDom = lastItem.find('.codefalse-file-preview');
-        if (previewDom) {
-            if (type === 'image' || type === 'video'){
-                previewDom.modaal({
-                    type: type,
-                    content_source: base64Source
-                });
-            }
-        }
-
-    }
+    // function initListener(codefalse, base64Source) {
+    //     let type = codefalse.options.type;
+    //     let lastItem = codefalse.$container.find('.file-item:last');
+    //     let previewDom = lastItem.find('.codefalse-file-preview');
+    //     if (previewDom) {
+    //         if (type === 'image' || type === 'video'){
+    //             previewDom.modaal({
+    //                 type: type,
+    //                 content_source: base64Source
+    //             });
+    //         }
+    //     }
+    //
+    // }
 
     function createFileItem(codefalse, fileName, base64File, status) {
         let type = codefalse.options.type;
         if (type === 'image') {
             initItems(codefalse, fileName, base64File, base64File, status);
-            initListener(codefalse, base64File);
+            //initListener(codefalse, base64File);
         } else if (type === 'video'){
             if (codefalse.options.useCapture) {
                 let video = document.createElement('video');
@@ -88,12 +88,12 @@
                     video = null;
                     canvas = null;
                     initItems(codefalse, fileName, base64Cover, base64File, status);
-                    initListener(codefalse, base64File);
+                    //initListener(codefalse, base64File);
                 };
                 video.src = base64File;
             }else{
                 initItems(codefalse, fileName, '', base64File, status);
-                initListener(codefalse, base64File);
+                //initListener(codefalse, base64File);
             }
         }
     }
@@ -110,6 +110,8 @@
          *  show: 是否显示，默认为true
          *  type: 选择文件类型，默认为image
          *  accept: 选择问价类型，默认*
+         *  isReader: 是否读取文件，默认读取
+         *  maxSize: 选择文件限制，默认100M
          *  maxFiles: 最大上传文件数量：默认3
          *  width: 组件宽度
          *  height: 组件高度
@@ -123,6 +125,8 @@
             show: true,
             type: 'image',
             accept: '',
+            isReader: true,
+            maxSize: 100,
             maxFiles: 3,
             width: '150px',
             height: '150px',
@@ -131,7 +135,7 @@
             actions: [],
             useCapture: false,
             upload: function () {},
-            setting: function () {}
+            preview: function () {return true;}
         };
         codefalse.options = $.extend({}, defaults, options);
 
@@ -148,16 +152,25 @@
                     for (let i in files){
                         if (!files.hasOwnProperty(i)) continue;
                         let file = files[i];
+                        let size = file.size;
+                        let maxSize = (codefalse.options.maxSize * 1024 * 1024).toFixed(2);
+                        if (size > maxSize){
+                            methods.error("选择文件超出可接受范围");
+                            return;
+                        }
                         //统计全部文件
                         fileArray.push(file);
-
-                        //读取文件内容
-                        let fileReader = new FileReader();
-                        fileReader.onload = function (e) {
-                            let base64File = e.target.result;
-                            createFileItem(codefalse, file.name, base64File, 'add');
-                        };
-                        fileReader.readAsDataURL(file);
+                        if (codefalse.options.isReader){
+                            //读取文件内容
+                            let fileReader = new FileReader();
+                            fileReader.onload = function (e) {
+                                let base64File = e.target.result;
+                                createFileItem(codefalse, file.name, base64File, 'add');
+                            };
+                            fileReader.readAsDataURL(file);
+                        }else{
+                            createFileItem(codefalse, file.name, '', 'add');
+                        }
                     }
                     $(this).val("");
                 });
@@ -201,9 +214,37 @@
                     let index = codefalse.$container.find('.file-item').index(fileItem);
                     methods.upload(index);
                 });
-                //自定义操作
-                codefalse.$container.on('click', '.codefalse-file-setting', function () {
-                    codefalse.options.setting($(this).parent().parent());
+                //文件预览
+                codefalse.$container.on('click', '.codefalse-file-preview', function () {
+                    let fileItem = $(this).parent().parent();
+                    let status = fileItem.attr('status');
+                    let isPreview = codefalse.options.preview(fileItem);
+                    if (status === 'add'){
+                        if (isPreview && codefalse.options.isReader) {
+                            let source = fileItem.find('input').val();
+                            if (codefalse.options.type === 'image' || codefalse.options.type === 'video'){
+                                $(this).modaal({
+                                    type: codefalse.options.type,
+                                    content_source: source,
+                                    start_open: true
+                                });
+                            }
+                        }
+                    } else if (status === 'update'){
+                        if (isPreview) {
+                            let source = fileItem.find('input').val();
+                            if (codefalse.options.type === 'image' || codefalse.options.type === 'video'){
+                                $(this).modaal({
+                                    type: codefalse.options.type,
+                                    content_source: source,
+                                    start_open: true
+                                });
+                            }
+                        }
+                    }
+
+
+
                 });
             },
             upload: function (index) {
@@ -292,6 +333,19 @@
             hide: function () {
                 this.clear();
                 codefalse.$container.hide();
+            },
+            getSource: function (fileItem) {
+                return fileItem.find('input').val();
+            },
+            setSource: function (fileItem, source) {
+                fileItem.find('input').val(source);
+                methods.changeStatus(fileItem, 'update');
+            },
+            getPreview: function (fileItem) {
+                return fileItem.find('.codefalse-file-operation>.codefalse-file-preview');
+            },
+            changeStatus: function (fileItem, status) {
+                fileItem.attr('status', status);
             }
         };
         methods._init();
