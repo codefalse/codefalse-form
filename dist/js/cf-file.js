@@ -1519,7 +1519,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       deleteName: '',
       actions: [],
       useCapture: false,
-      upload: function upload() {}
+      upload: function upload() {},
+      setting: function setting() {}
     };
     codefalse.options = $.extend({}, defaults, options);
     var fileArray = [];
@@ -1599,6 +1600,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           var fileItem = $(this).parent().parent();
           var index = codefalse.$container.find('.file-item').index(fileItem);
           methods.upload(index);
+        }); //自定义操作
+
+        codefalse.$container.on('click', '.codefalse-file-setting', function () {
+          codefalse.options.setting($(this).parent().parent());
         });
       },
       upload: function upload(index) {

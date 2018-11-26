@@ -130,7 +130,8 @@
             deleteName: '',
             actions: [],
             useCapture: false,
-            upload: function () {}
+            upload: function () {},
+            setting: function () {}
         };
         codefalse.options = $.extend({}, defaults, options);
 
@@ -199,6 +200,10 @@
                     let fileItem = $(this).parent().parent();
                     let index = codefalse.$container.find('.file-item').index(fileItem);
                     methods.upload(index);
+                });
+                //自定义操作
+                codefalse.$container.on('click', '.codefalse-file-setting', function () {
+                    codefalse.options.setting($(this).parent().parent());
                 });
             },
             upload: function (index) {

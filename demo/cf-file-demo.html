@@ -20,9 +20,12 @@
             accept: 'video/*',
             name: 'demo',
             deleteName: 'deleteDemo',
-            actions: ['preview', 'upload'],
+            actions: ['preview', 'upload', 'setting'],
             upload: function (fileItems, files) {
                 console.log(fileItems)
+            },
+            setting: function (fileItem) {
+                console.log(fileItem)
             }
         });
         // file.adapter([
