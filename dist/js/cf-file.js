@@ -1663,16 +1663,27 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
         if (index != undefined) {
           var fileItem = codefalse.$container.find('.file-item').eq(index);
-          var source = fileItem.find('input').val();
-          var a = source.split(',')[0];
-          var b1 = a.split(';')[1];
+          fileItems.push(fileItem);
+          files.push(fileArray[index]); //判断
 
-          if (b1 !== undefined && b1 === 'base64') {
-            fileItems.push(fileItem);
-            files.push(fileArray[index]);
-            codefalse.options.upload(fileItems, files);
+          if (codefalse.options.isReader) {
+            var source = methods.getSource(fileItem);
+            var a = source.split(',')[0];
+            var b1 = a.split(';')[1];
+
+            if (b1 !== undefined && b1 === 'base64') {
+              codefalse.options.upload(fileItems, files);
+            } else {
+              methods.error('此处没有要上传的文件');
+            }
           } else {
-            methods.error('此处没有要上传的文件');
+            var _source2 = methods.getSource(fileItem);
+
+            if (_source2) {
+              methods.error('此处没有要上传的文件');
+            } else {
+              codefalse.options.upload(fileItems, files);
+            }
           }
         } else {
           methods.error("暂时不支持多文件上传"); // codefalse.$container.find('.file-item').each(function (index) {

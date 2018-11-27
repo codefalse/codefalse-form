@@ -252,16 +252,28 @@
                 let files = [];
                 if (index != undefined){
                     let fileItem = codefalse.$container.find('.file-item').eq(index);
-                    let source = fileItem.find('input').val();
-                    let a = source.split(',')[0];
-                    let b1 = a.split(';')[1];
-                    if (b1 !== undefined && b1 === 'base64') {
-                        fileItems.push(fileItem);
-                        files.push(fileArray[index]);
-                        codefalse.options.upload(fileItems, files);
+                    fileItems.push(fileItem);
+                    files.push(fileArray[index]);
+                    //判断
+                    if (codefalse.options.isReader) {
+                        let source = methods.getSource(fileItem);
+                        let a = source.split(',')[0];
+                        let b1 = a.split(';')[1];
+                        if (b1 !== undefined && b1 === 'base64') {
+                            codefalse.options.upload(fileItems, files);
+                        } else {
+                            methods.error('此处没有要上传的文件');
+                        }
                     } else {
-                        methods.error('此处没有要上传的文件');
+                        let source = methods.getSource(fileItem);
+                        if (source) {
+                            methods.error('此处没有要上传的文件');
+                        } else {
+                            codefalse.options.upload(fileItems, files);
+                        }
                     }
+
+
                 }else{
                     methods.error("暂时不支持多文件上传");
                     // codefalse.$container.find('.file-item').each(function (index) {
