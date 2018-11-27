@@ -1631,25 +1631,43 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           var isPreview = codefalse.options.preview(fileItem);
 
           if (status === 'add') {
-            if (isPreview && codefalse.options.isReader) {
-              var source = fileItem.find('input').val();
+            if (isPreview) {
+              if (codefalse.options.isReader) {
+                var source = methods.getSource(fileItem);
 
-              if (codefalse.options.type === 'image' || codefalse.options.type === 'video') {
-                $(this).modaal({
-                  type: codefalse.options.type,
-                  content_source: source,
-                  start_open: true
-                });
+                if (codefalse.options.type === 'image' || codefalse.options.type === 'video') {
+                  $(this).modaal({
+                    type: codefalse.options.type,
+                    content_source: source,
+                    start_open: true
+                  });
+                }
+              } else {
+                if (codefalse.options.type === 'image' || codefalse.options.type === 'video') {
+                  var index = codefalse.$container.find('.file-item').index(fileItem);
+                  var file = fileArray[index];
+
+                  var _source = window.URL.createObjectURL(file);
+
+                  $(this).modaal({
+                    type: codefalse.options.type,
+                    start_open: true,
+                    content_source: _source,
+                    after_close: function after_close() {
+                      window.URL.revokeObjectURL(_source);
+                    }
+                  });
+                }
               }
             }
           } else if (status === 'update') {
             if (isPreview) {
-              var _source = fileItem.find('input').val();
+              var _source2 = fileItem.find('input').val();
 
               if (codefalse.options.type === 'image' || codefalse.options.type === 'video') {
                 $(this).modaal({
                   type: codefalse.options.type,
-                  content_source: _source,
+                  content_source: _source2,
                   start_open: true
                 });
               }
@@ -1677,9 +1695,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
               methods.error('此处没有要上传的文件');
             }
           } else {
-            var _source2 = methods.getSource(fileItem);
+            var _source3 = methods.getSource(fileItem);
 
-            if (_source2) {
+            if (_source3) {
               methods.error('此处没有要上传的文件');
             } else {
               codefalse.options.upload(fileItems, files);

@@ -220,15 +220,32 @@
                     let status = fileItem.attr('status');
                     let isPreview = codefalse.options.preview(fileItem);
                     if (status === 'add'){
-                        if (isPreview && codefalse.options.isReader) {
-                            let source = fileItem.find('input').val();
-                            if (codefalse.options.type === 'image' || codefalse.options.type === 'video'){
-                                $(this).modaal({
-                                    type: codefalse.options.type,
-                                    content_source: source,
-                                    start_open: true
-                                });
+                        if (isPreview) {
+                            if (codefalse.options.isReader) {
+                                let source = methods.getSource(fileItem);
+                                if (codefalse.options.type === 'image' || codefalse.options.type === 'video') {
+                                    $(this).modaal({
+                                        type: codefalse.options.type,
+                                        content_source: source,
+                                        start_open: true
+                                    });
+                                }
+                            } else {
+                                if (codefalse.options.type === 'image' || codefalse.options.type === 'video') {
+                                    let index = codefalse.$container.find('.file-item').index(fileItem);
+                                    let file = fileArray[index];
+                                    let source = window.URL.createObjectURL(file);
+                                    $(this).modaal({
+                                        type: codefalse.options.type,
+                                        start_open: true,
+                                        content_source: source,
+                                        after_close: function () {
+                                            window.URL.revokeObjectURL(source);
+                                        }
+                                    });
+                                }
                             }
+
                         }
                     } else if (status === 'update'){
                         if (isPreview) {
