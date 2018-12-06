@@ -1742,7 +1742,21 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         }
       },
       size: function size() {
-        return codefalse.$container.find('.file-item').length;
+        var isReader = codefalse.options.isReader;
+
+        if (isReader) {
+          return codefalse.$container.find('.file-item').length;
+        } else {
+          var size = 0;
+          codefalse.$container.find('.file-item').each(function () {
+            var inputVal = $(this).find('input').val();
+
+            if (inputVal) {
+              size++;
+            }
+          });
+          return size;
+        }
       },
       clear: function clear(index) {
         if (index != undefined) {

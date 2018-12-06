@@ -328,7 +328,19 @@
                 }
             },
             size: function () {
-                return codefalse.$container.find('.file-item').length;
+                let isReader = codefalse.options.isReader;
+                if (isReader) {
+                    return codefalse.$container.find('.file-item').length;
+                } else {
+                    let size = 0;
+                    codefalse.$container.find('.file-item').each(function () {
+                        let inputVal = $(this).find('input').val();
+                        if (inputVal) {
+                            size++
+                        }
+                    });
+                    return size;
+                }
             },
             clear: function (index) {
                 if (index != undefined) {
