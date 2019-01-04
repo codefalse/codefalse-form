@@ -1522,7 +1522,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       upload: function upload() {},
       preview: function preview() {
         return true;
-      }
+      },
+      delete: function _delete() {}
     };
     codefalse.options = $.extend({}, defaults, options);
     var fileArray = [];
@@ -1764,6 +1765,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           var status = fileItem.attr('status');
           var source = fileArray[index];
           fileArray.splice(index, 1);
+          codefalse.options.delete(source);
 
           if (status === 'update' && codefalse.options.deleteName !== '') {
             var deleteInput = '<input type="hidden" name="' + codefalse.options.deleteName + '" value="' + source + '" />';

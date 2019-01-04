@@ -135,7 +135,8 @@
             actions: [],
             useCapture: false,
             upload: function () {},
-            preview: function () {return true;}
+            preview: function () {return true;},
+            delete: function () {}
         };
         codefalse.options = $.extend({}, defaults, options);
 
@@ -348,6 +349,7 @@
                     let status = fileItem.attr('status');
                     let source = fileArray[index];
                     fileArray.splice(index, 1);
+                    codefalse.options.delete(source);
                     if (status === 'update' && codefalse.options.deleteName !== ''){
                         let deleteInput = '<input type="hidden" name="'+codefalse.options.deleteName+'" value="'+source+'" />';
                         codefalse.$container.append(deleteInput);
