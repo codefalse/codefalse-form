@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link href="static/cropper.min.css" rel="stylesheet" >
     <link href="../dist/css/cf-file.css" rel="stylesheet" type="text/css" />
 
 </head>
@@ -12,29 +13,19 @@
 <input type="button" value="hide" id="hide" />
 <input type="button" value="清空" id="clear" />
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<script src="static/cropper.min.js"></script>
 <script src="../dist/js/cf-file.js"></script>
 <script>
     $().ready(function () {
         let file = $('#fileDemo').codefalseFile({
-            type: 'video',
-            accept: 'video/*',
+            type: 'image',
+            accept: 'image/*',
             maxSize: 50,
-            isReader: false,
             name: 'demo',
             deleteName: 'deleteDemo',
             maxFiles: 10,
             actions: ['preview', 'upload'],
-            upload: function (fileItems, files) {
-                console.log(fileItems)
-            },
-            preview: function (fileItem) {
-                // let status = fileItem.attr('status');
-                // if (status === 'update'){
-                //
-                //     return false;
-                // }
-                return true;
-            }
+            cropper: true
         });
         // file.adapter([
         //     'http://img.tupianzj.com/uploads/allimg/151115/9-151115130320.jpg',

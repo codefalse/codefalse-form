@@ -1503,7 +1503,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
      *  deleteName: 删除文件输入框名称<input name="deleteName" />
      *  actions: array,操作有preview, upload
      *  useCapture:是否截取视频文件一帧图片，只对type:video有用
+     *  cropper: 是否裁剪图片，只对type:image有用
      *  upload: function(fileItem, files),点击upload时回调
+     *  cropper: function(base64File) 中间过程，对Base64File做一些自定义操作并返回
      */
 
     var defaults = {
@@ -1519,6 +1521,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       deleteName: '',
       actions: [],
       useCapture: false,
+      cropper: false,
       upload: function upload() {},
       preview: function preview() {
         return true;
