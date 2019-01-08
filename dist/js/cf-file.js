@@ -1459,7 +1459,33 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var type = codefalse.options.type;
 
     if (type === 'image') {
-      initItems(codefalse, fileName, base64File, base64File, status); //initListener(codefalse, base64File);
+      if (codefalse.options.cropper != null) {
+        var cropper;
+        $('body').modaal({
+          type: type,
+          content_source: base64File,
+          start_open: true,
+          after_open: function after_open(e) {
+            var img = e.find('img');
+            cropper = new Cropper(img[0], codefalse.options.cropper);
+          },
+          before_close: function before_close() {
+            cropper.getCroppedCanvas().toBlob(function (blob) {
+              var cropperReader = new FileReader();
+
+              cropperReader.onload = function (e) {
+                base64File = e.target.result;
+                initItems(codefalse, fileName, base64File, base64File, status);
+              };
+
+              cropperReader.readAsDataURL(blob);
+            });
+          }
+        });
+      } else {
+        initItems(codefalse, fileName, base64File, base64File, status);
+      } //initListener(codefalse, base64File);
+
     } else if (type === 'video') {
       if (codefalse.options.useCapture) {
         var video = document.createElement('video');
@@ -1503,7 +1529,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
      *  deleteName: 删除文件输入框名称<input name="deleteName" />
      *  actions: array,操作有preview, upload
      *  useCapture:是否截取视频文件一帧图片，只对type:video有用
-     *  cropper: 是否裁剪图片，只对type:image有用
+     *  cropper: 是否裁剪图片，以及裁剪的参数，对应Cropper，只对type:image有用
      *  upload: function(fileItem, files),点击upload时回调
      *  cropper: function(base64File) 中间过程，对Base64File做一些自定义操作并返回
      */
@@ -1521,7 +1547,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       deleteName: '',
       actions: [],
       useCapture: false,
-      cropper: false,
+      cropper: null,
       upload: function upload() {},
       preview: function preview() {
         return true;

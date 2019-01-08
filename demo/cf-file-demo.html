@@ -25,24 +25,26 @@
             deleteName: 'deleteDemo',
             maxFiles: 10,
             actions: ['preview', 'upload'],
-            cropper: true
+            cropper: {
+                aspectRatio: 16 / 9
+            }
         });
         // file.adapter([
         //     'http://img.tupianzj.com/uploads/allimg/151115/9-151115130320.jpg',
         //     'http://pic1a.nipic.com/2009-02-13/200921385412757_2.jpg',
         //     'http://img.tupianzj.com/uploads/allimg/151115/9-151115130320.jpg'
         // ])
-        file.adapter(['http://v.xinlilife.com/471be42fd7f64dbe95e0ab3284987473/5d2dc35c4fb8464aad7a242902a9182c-5415c0ea54381fca2d34a0bbf1ed628a-ld.mp4?auth_key=1543217421-1483e4e48a8c4811994776b5e2ae5bf2-0-e026f98fbfad65d69862d44cf48b8166'])
-        $('#clear').on('click', function () {
-            console.log('---------')
-            file.clear();
-        });
-        $('#show').on('click', function () {
-            file.show();
-        })
-        $('#hide').on('click', function () {
-            file.hide()
-        });
+        // file.adapter(['http://v.xinlilife.com/471be42fd7f64dbe95e0ab3284987473/5d2dc35c4fb8464aad7a242902a9182c-5415c0ea54381fca2d34a0bbf1ed628a-ld.mp4?auth_key=1543217421-1483e4e48a8c4811994776b5e2ae5bf2-0-e026f98fbfad65d69862d44cf48b8166'])
+        // $('#clear').on('click', function () {
+        //     console.log('---------')
+        //     file.clear();
+        // });
+        // $('#show').on('click', function () {
+        //     file.show();
+        // })
+        // $('#hide').on('click', function () {
+        //     file.hide()
+        // });
     })
 </script>
 </body>
