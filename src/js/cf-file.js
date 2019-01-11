@@ -74,7 +74,7 @@
     function createFileItem(codefalse, fileName, base64File, status) {
         let type = codefalse.options.type;
         if (type === 'image') {
-            if (codefalse.options.cropper != null){
+            if (codefalse.options.cropper != null && status === 'add'){
                 let cropper;
                 $('body').modaal({
                     type: type,

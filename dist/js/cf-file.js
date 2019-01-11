@@ -1459,7 +1459,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var type = codefalse.options.type;
 
     if (type === 'image') {
-      if (codefalse.options.cropper != null) {
+      if (codefalse.options.cropper != null && status === 'add') {
         var cropper;
         $('body').modaal({
           type: type,

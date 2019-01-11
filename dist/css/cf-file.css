@@ -694,6 +694,7 @@
 .codefalse-file .codefalse-file-item > img,
 .codefalse-file .codefalse-file-item > i {
   width: 100%;
+  max-height: 100%;
 }
 .codefalse-file .codefalse-file-item > i {
   display: inline-block;
